@@ -208,7 +208,7 @@ Converter.convertOctalToBinary = function (octal) {
 };
 
 Converter.convertOctalToHexa = function (octal) {
-    return Converter.convertBinaryToHexa(convertOctalToBinary(octal)); // lazy, but this one is better
+    return Converter.convertBinaryToHexa(Converter.convertOctalToBinary(octal)); // lazy, but this one is better
 };
 
 // functions for converting Hexadecimal to other systems
@@ -318,7 +318,7 @@ Converter.convertHexaToBinary = function (hexa) {
 };
 
 Converter.convertHexaToOctal = function (hexa) {
-    return Converter.convertBinaryToOctal(convertHexaToBinary(hexa)); // lazy mode agen
+    return Converter.convertBinaryToOctal(Converter.convertHexaToBinary(hexa)); // lazy mode agen
 };
 
 // integer parser
@@ -363,16 +363,16 @@ Converter.addBaseNumber = function (numbersystem, number) {
 
     switch (numbersystem) {
         case "Decimal":
-            subscript = "<sub>10</sub>";
+            subscript = "<sub class='smSub'>10</sub>";
             break;
         case "Binary":
-            subscript = "<sub>2</sub>";
+            subscript = "<sub class='smSub'>2</sub>";
             break;
         case "Hexadecimal":
-            subscript = "<sub>16</sub>"
+            subscript = "<sub class='smSub'>16</sub>"
             break;
         case "Octal":
-            subscript = "<sub>8</sub>"
+            subscript = "<sub class='smSub'>8</sub>"
             break;
     }
 

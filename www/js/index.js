@@ -72,32 +72,31 @@ var app = {
         // converts the input number to the different number systems
         function convertOperation(givenType, doAnimation) {
             var input_number = $("#txtNumber").val();
-            console.log(input_number);
             
             switch (givenType) {
                 case "Decimal":
-                    $("#txtDecimal").text(input_number);
-                    $("#txtBinary").text(Converter.convertDecimalToBinary(input_number));
-                    $("#txtHexa").text(Converter.convertDecimalToHexa(input_number));
-                    $("#txtOctal").text(Converter.convertDecimalToOctal(input_number));
+                    $("#txtDecimal").html(Converter.addBaseNumber("Decimal", input_number));
+                    $("#txtBinary").html(Converter.addBaseNumber("Binary", Converter.convertDecimalToBinary(input_number)));
+                    $("#txtHexa").html(Converter.addBaseNumber("Hexadecimal", Converter.convertDecimalToHexa(input_number)));
+                    $("#txtOctal").html(Converter.addBaseNumber("Octal", Converter.convertDecimalToOctal(input_number)));
                     break;
                 case "Binary":
-                    $("#txtBinary").text(input_number);
-                    $("#txtDecimal").text(Converter.convertBinaryToDecimal(input_number));
-                    $("#txtHexa").text(Converter.convertBinaryToHexa(input_number));
-                    $("#txtOctal").text(Converter.convertBinaryToOctal(input_number));
+                    $("#txtBinary").html(Converter.addBaseNumber("Binary", input_number));
+                    $("#txtDecimal").html(Converter.addBaseNumber("Decimal", Converter.convertBinaryToDecimal(input_number)));
+                    $("#txtHexa").html(Converter.addBaseNumber("Hexadecimal", Converter.convertBinaryToHexa(input_number)));
+                    $("#txtOctal").html(Converter.addBaseNumber("Octal", Converter.convertBinaryToOctal(input_number)));
                     break;
                 case "Hexadecimal":
-                    $("#txtHexa").text(input_number);
-                    $("#txtDecimal").text(Converter.convertHexaToDe(input_number));
-                    $("#txtBinary").text(Converter.convertHexaToBinary(input_number));
-                    $("#txtOctal").text(Converter.convertHexaToOctal(input_number));
+                    $("#txtHexa").html(Converter.addBaseNumber("Hexadecimal", input_number));
+                    $("#txtDecimal").html(Converter.addBaseNumber("Decimal", Converter.convertHexaToDecimal(input_number)));
+                    $("#txtBinary").html(Converter.addBaseNumber("Binary", Converter.convertHexaToBinary(input_number)));
+                    $("#txtOctal").html(Converter.addBaseNumber("Octal", Converter.convertHexaToOctal(input_number)));
                     break;
                 case "Octal":
-                    $("#txtOctal").text(input_number);
-                    $("#txtDecimal").text(Converter.convertOctalToDecimal(input_number));
-                    $("#txtBinary").text(Converter.convertOctalToBinary(input_number));
-                    $("#txtHexa").text(Converter.convertOctalToHexa(input_number));
+                    $("#txtOctal").html(Converter.addBaseNumber("Octal", input_number));
+                    $("#txtDecimal").html(Converter.addBaseNumber("Decimal", Converter.convertOctalToDecimal(input_number)));
+                    $("#txtBinary").html(Converter.addBaseNumber("Binary", Converter.convertOctalToBinary(input_number)));
+                    $("#txtHexa").html(Converter.addBaseNumber("Hexadecimal", Converter.convertOctalToHexa(input_number)));
                     break;
             }
         }
@@ -135,7 +134,9 @@ var app = {
             var detected_count = num_systems_detected.length;
             
             // copy input to area
-            $("#convNum").html($("#txtNumber").val().toUpperCase());
+            $("#convNum").html(Converter.addBaseNumber($("#cmbFrom").val(), $("#txtNumber").val().toUpperCase()));
+            
+            // convert the number and it's possbile number system
             if (detected_count > 0) {
                 updateSystemList(num_systems_detected);
                 convertOperation($("#cmbFrom").val(), false);
@@ -165,7 +166,11 @@ var app = {
         });
         
         // cmbFrom combobox change event
-        $("#cmbFrom").change(function () {
+        $("#cmbFrom").change(function () { 
+            $("#cmbFrom").selectmenu("refresh");
+            
+            // update given number and do the conversion
+            $("#convNum").html(Converter.addBaseNumber($("#cmbFrom").val(), $("#txtNumber").val().toUpperCase()));
             convertOperation($("#cmbFrom").val(), false); 
         });
         
