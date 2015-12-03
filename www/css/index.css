@@ -53,6 +53,9 @@ li {
 }
 
 li.resultList {
+    -webkit-transform: translate3d(0px,0px,0px);
+    -webkit-opacity: 1;
+    
     transform: translate3d(0px,0px,0px);
     opacity: 1;
 }
