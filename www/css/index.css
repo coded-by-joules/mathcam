@@ -6,6 +6,7 @@ body {
     -webkit-touch-callout: none;                /* prevent callout to copy image, etc when tap to hold */
     -webkit-text-size-adjust: none;             /* prevent webkit from resizing text to fit */
     -webkit-user-select: none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
+<<<<<<< HEAD
     overflow: hidden;
 }
 
@@ -66,6 +67,8 @@ li.showAnim {
     
     opacity: 1;
     transform: translate3d(0px, 0px, 0px);
+=======
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f
 }
 
 div#input {
@@ -104,7 +107,11 @@ div.rightBtn {
     text-align: right;
 }
 
+<<<<<<< HEAD
 div#convResults, div#historyArea {
+=======
+div#convResults {
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f
     margin-top: 20px;
 }
 
@@ -156,7 +163,11 @@ h3.tabTitle {
     font-size: 12pt;
 }
 
+<<<<<<< HEAD
 div.convDetails, div#ipAns {
+=======
+div.convDetails {
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f
     text-align: center;
     margin-top: -25px !important;
 }
@@ -165,7 +176,11 @@ div.convDetails, div#ipAns {
     font-size: 8pt;   
 }
 
+<<<<<<< HEAD
 p#convNum, button#ipAns {
+=======
+p#convNum {
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f
     font-size: 24pt;
     font-weight: bold;
 }
@@ -179,8 +194,12 @@ span#cType {
 }
 
 div.answer {
+<<<<<<< HEAD
     text-align: center;    
     background-color: #0071BC;   
+=======
+    text-align: center;
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f
 }
 
 p.typeDesc {
@@ -188,6 +207,13 @@ p.typeDesc {
 }
 
 
+<<<<<<< HEAD
+=======
+div.answer {
+    background-color: #0071BC;   
+}
+
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f
 div#blockA {
     border-top-left-radius: 10px;
 }
@@ -211,6 +237,7 @@ div#blockA, div#blockB {
 
 div#blockA, div#blockC {
     border-right: 3px solid #0B3E67;
+<<<<<<< HEAD
 }
 
 div#solutionContent {
@@ -221,4 +248,6 @@ div#solutionContent {
 
 table {
     text-align: center;
+=======
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f
 }

@@ -4,7 +4,11 @@
         <meta charset="utf-8" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="msapplication-tap-highlight" content="no" />
+<<<<<<< HEAD
         <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, target-densitydpi=medium-dpi, user-scalable=0" />
+=======
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, target-densitydpi=medium-dpi, user-scalable=0" />
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f
         
         <!-- MathCam references -->
         <link rel="stylesheet" type="text/css" href="css/themes/mathcam.min.css" />
@@ -13,6 +17,7 @@
         <link rel="stylesheet" type="text/css" href="css/index.css" />
         <script src="js/jquery-1.11.3.min.js"></script>
         <script src="js/jquery.mobile-1.4.5.min.js"></script>
+<<<<<<< HEAD
         <script type="application/javascript" src="js/fastclick.js"></script>
         <script src="js/jcrop.js"></script>
         <title>MathCam</title>
@@ -34,16 +39,29 @@
             <div data-role="header">
                 <h3>Number System</h3>
                 <a class="ui-btn-right ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-notext ui-icon-clock" href="#historyPanel">History</a>
+=======
+        <title>MathCam</title>
+    </head>
+    <body>
+        <div data-role="page">
+            <div data-role="header">
+                <h3>Number System</h3>
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f
             </div>
             
             <div role="main" class="ui-content" id="mainBody">
                 <div id="input" class="inputShown">
                     <div class="ui-grid-a">
+<<<<<<< HEAD
                         <div class="ui-block-a txtInp"><input type="text" id="txtNumber" placeholder="Enter a number or an IP address" /></div>
+=======
+                        <div class="ui-block-a txtInp"><input type="text" id="txtNumber" placeholder="Enter a number" /></div>
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f
                         <div class="ui-block-b btnInp">
                             <a class="ui-btn ui-icon-camera ui-btn-icon-notext ui-corner-all" href="#" id="cameraPopup">Camera</a>
                         </div>
                     </div>
+<<<<<<< HEAD
                     <div class="convertList">
                         <ul data-role="listview" data-inset="true" id="clistsimp" data-filter="true" data-filter-reveal="true" data-input="#txtNumber">
 
@@ -51,6 +69,10 @@
                   </div>
                     <button class="ui-btn ui-corner-all ui-shadow" id="btnConvert">Convert</button>
                 </div> <!-- input -->
+=======
+                    <button class="ui-btn ui-corner-all ui-shadow" id="btnConvert">Convert</button>
+                </div>
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f
                 
                 <div id="results" class="hideResult">
                     <!-- details like the number entered and its number system -->
@@ -61,19 +83,33 @@
                         <div class="ui-body contentBody">
                             <div class="convDetails">
                                 <p id="convNum">2520</p>
+<<<<<<< HEAD
                                 <input type="hidden" id="hidNum" value="" />
                                 <p id="convType">
                                     This is <span id="vowel">a</span> 
                                     <select id="cmbFrom" data-inline="true" data-mini="true">
+=======
+                                <p id="convType">
+                                    This is a 
+                                    <select id="cmbFrom" data-inline="true" data-mini="true" data-native-menu="false">
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f
                                         <option value="Decimal">Decimal</option>
                                         <option value="Binary">Binary</option>
                                         <option value="Hexadecimal">Hexadecimal</option>
                                         <option value="Octal">Octal</option>
+<<<<<<< HEAD
                                     </select> <span id="viewMe">number</span>
                                 </p>
                             </div>
                         </div>
                     </div> <!-- details -->
+=======
+                                    </select> number
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f
                     
                     <!-- conversion results area -->
                     <div id="convResults" class="ui-corner-all custom-corners ui-shadow">
@@ -81,8 +117,12 @@
                             <h3 class="tabTitle">Conversion Results</h3>
                         </div>
                         <div class="ui-body contentBody">
+<<<<<<< HEAD
                             <p>Tap an answer to view its solution</p>
                             <div class="ui-grid-a contentShadow" id="numberSystemAns">
+=======
+                            <div class="ui-grid-a contentShadow">
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f
                                 <div class="ui-block-a answer" id="blockA">
                                     <h2 id="txtDecimal">254</h2>    
                                     <p class="typeDesc">Decimal</p>
@@ -99,6 +139,7 @@
                                     <h2 id="txtOctal">2012</h2>
                                     <p class="typeDesc">Octal</p>
                                 </div>
+<<<<<<< HEAD
                             </div>                        
                             <div id="ipAnswer">
                                 <button class="showSolution ui-btn" id="ipAns">192.42.12.24</button>
@@ -108,6 +149,13 @@
                     </div> <!-- convResults -->
                     <button class="ui-btn ui-corner-all ui-shadow" id="btnAnother">Convert Another</button>
                 </div> <!-- results -->
+=======
+                            </div>                            
+                        </div>
+                    </div>
+                    <button class="ui-btn ui-corner-all ui-shadow" id="btnAnother">Convert Another</button>
+                </div>
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f
                 
                 <!-- camera popup dialog -->
                 <div id="cameraDialog" data-role="popup" data-dismissable="false">
@@ -121,9 +169,12 @@
                             <img id="imgPlaceholder" />
                         </div>
                         
+<<<<<<< HEAD
                         <div class="ui-grid-solo">
                             <p class="recognition"></p>
                         </div>
+=======
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f
                         <div class="ui-grid-a">
                             <div class="ui-block-a">
                                 <a class="ui-btn ui-corner-all ui-icon-camera ui-btn-icon-left ui-mini" href="#" id="btnCamera">Capture</a>
@@ -133,6 +184,7 @@
                             </div>
                         </div>
                         <div class="ui-grid-solo">
+<<<<<<< HEAD
                             <a class="ui-btn ui-corner-all ui-btn-shadow ui-state-disabled" id="useImage" href="#">Use Image</a>
                         </div>
                     </div>                
@@ -152,15 +204,31 @@
                 </div>
             </div> <!-- main -->
         </div> <!-- page -->
+=======
+                            <a class="ui-btn ui-corner-all ui-btn-shadow" href="#">Use Image</a>
+                        </div>
+                    </div>                
+                </div>
+            </div>
+            
+        </div>
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f
         
         <!-- MathCam scripts -->
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript" src="js/converters.js"></script>
+<<<<<<< HEAD
         <script type="text/javascript" src="js/history.js"></script>
         <script type="text/javascript" src="js/solutions.js"></script>
+=======
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f
         <script type="text/javascript">
             app.initialize();
         </script>
     </body>
+<<<<<<< HEAD
 </html> 
+=======
+</html>
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f

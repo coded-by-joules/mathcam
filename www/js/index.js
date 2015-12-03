@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 var app = {
     crop_handle: null,
     // Application Constructor
@@ -8,6 +9,13 @@ var app = {
         };
         var mainPage = document.getElementById("mainBody");
         mainPage.addEventListener("touchmove", removeFunc, false);
+=======
+
+var app = {
+    // Application Constructor
+    initialize: function () {
+        "use strict";
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f
         this.bindEvents();
     },
     
@@ -20,6 +28,7 @@ var app = {
         "use strict";
         document.addEventListener('deviceready', this.onDeviceReady, false);
         document.addEventListener('backbutton', this.onBackButton, false);
+<<<<<<< HEAD
         
         $(document).ready(function () {                
             // Fast click!
@@ -43,10 +52,24 @@ var app = {
         // detects the number system inputted
         // returns an array of possible number systems
         var detectNumberSystem = function (number) {
+=======
+           
+        var cameraCallback = this.loadImage;
+        
+        // function to be invoked when camera returns an error
+        function errorMsg(msg) {
+          //  alert("Error");   
+        }
+        
+        // detects the number system inputted
+        // returns an array of possible number systems
+        function detectNumberSystem(number) {
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f
             var number_systems = [],
                 decimal_regex = /^\d+$/,
                 binary_regex = /^[0-1]+$/,
                 hex_regex = /^[0-9|A-F]+$/,
+<<<<<<< HEAD
                 octal_regex = /^[0-7]+$/,
                 ip_regex = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
             
@@ -55,6 +78,9 @@ var app = {
 
                 return number_systems; // return immediately
             }
+=======
+                octal_regex = /^[0-7]+$/;
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f
             
             if (decimal_regex.test(number)) {
                 number_systems.push("Decimal");   
@@ -76,12 +102,21 @@ var app = {
         };
         
         // clears the input box
+<<<<<<< HEAD
         var clearInput = function () {
             $("#txtNumber").val("");  
         };
         
         // adds the number system detected to the combo box
         var updateSystemList = function (num_systems_array) {
+=======
+        function clearInput() {
+            $("#txtNumber").val("");   
+        }
+        
+        // adds the number system detected to the combo box
+        function updateSystemList(num_systems_array) {
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f
             $("#cmbFrom option").remove();
             var system_length = num_systems_array.length;
             
@@ -90,6 +125,7 @@ var app = {
             }
             
             $("#cmbFrom").selectmenu("refresh");
+<<<<<<< HEAD
         };
         
         var transition = function () {
@@ -148,6 +184,44 @@ var app = {
         };   
 
 
+=======
+        }
+        
+        // IMPORTANT METHOD HERE
+        // converts the input number to the different number systems
+        function convertOperation(givenType, doAnimation) {
+            var input_number = $("#txtNumber").val();
+            
+            switch (givenType) {
+                case "Decimal":
+                    $("#txtDecimal").html(Converter.addBaseNumber("Decimal", input_number));
+                    $("#txtBinary").html(Converter.addBaseNumber("Binary", Converter.convertDecimalToBinary(input_number)));
+                    $("#txtHexa").html(Converter.addBaseNumber("Hexadecimal", Converter.convertDecimalToHexa(input_number)));
+                    $("#txtOctal").html(Converter.addBaseNumber("Octal", Converter.convertDecimalToOctal(input_number)));
+                    break;
+                case "Binary":
+                    $("#txtBinary").html(Converter.addBaseNumber("Binary", input_number));
+                    $("#txtDecimal").html(Converter.addBaseNumber("Decimal", Converter.convertBinaryToDecimal(input_number)));
+                    $("#txtHexa").html(Converter.addBaseNumber("Hexadecimal", Converter.convertBinaryToHexa(input_number)));
+                    $("#txtOctal").html(Converter.addBaseNumber("Octal", Converter.convertBinaryToOctal(input_number)));
+                    break;
+                case "Hexadecimal":
+                    $("#txtHexa").html(Converter.addBaseNumber("Hexadecimal", input_number));
+                    $("#txtDecimal").html(Converter.addBaseNumber("Decimal", Converter.convertHexaToDecimal(input_number)));
+                    $("#txtBinary").html(Converter.addBaseNumber("Binary", Converter.convertHexaToBinary(input_number)));
+                    $("#txtOctal").html(Converter.addBaseNumber("Octal", Converter.convertHexaToOctal(input_number)));
+                    break;
+                case "Octal":
+                    $("#txtOctal").html(Converter.addBaseNumber("Octal", input_number));
+                    $("#txtDecimal").html(Converter.addBaseNumber("Decimal", Converter.convertOctalToDecimal(input_number)));
+                    $("#txtBinary").html(Converter.addBaseNumber("Binary", Converter.convertOctalToBinary(input_number)));
+                    $("#txtHexa").html(Converter.addBaseNumber("Hexadecimal", Converter.convertOctalToHexa(input_number)));
+                    break;
+            }
+        }
+        
+        // camera event handler
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f
         $("#btnCamera").click(function () {
             navigator.camera.getPicture(cameraCallback, errorMsg, { quality: 50, 
                                                               destinationType: Camera.DestinationType.FILE_URI,
@@ -159,7 +233,11 @@ var app = {
            navigator.camera.getPicture(cameraCallback, errorMsg, {quality: 50,
                                                                  destinationType: Camera.DestinationType.FILE_URI,
                                                                  sourceType: Camera.PictureSourceType.PHOTOLIBRARY});
+<<<<<<< HEAD
         });    
+=======
+        });
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f
                 
         // camera popup event handler
         $("#cameraPopup").click(function(e) {
@@ -173,6 +251,7 @@ var app = {
             
             $("#cameraDialog").popup("open", {transition: "fade", positionTo: "window"});
         });
+<<<<<<< HEAD
 
         
         // MAIN convert function
@@ -183,10 +262,21 @@ var app = {
             // copy input to area
             $("#convNum").html(Converter.addBaseNumber(num_systems_detected[0], number.toUpperCase()));
             $("#hidNum").val(number);
+=======
+        
+        // convert button click event
+        $("#btnConvert").click(function () {
+            var num_systems_detected = detectNumberSystem($("#txtNumber").val().toUpperCase());
+            var detected_count = num_systems_detected.length;
+            
+            // copy input to area
+            $("#convNum").html(Converter.addBaseNumber($("#cmbFrom").val(), $("#txtNumber").val().toUpperCase()));
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f
             
             // convert the number and it's possbile number system
             if (detected_count > 0) {
                 updateSystemList(num_systems_detected);
+<<<<<<< HEAD
                 convertOperation(number, num_systems_detected[0]);
                 
                 // showing/hiding content dependent on the number system detected
@@ -258,17 +348,39 @@ var app = {
         $("#btnConvert").click(function () {
             if (convert($("#txtNumber").val(), true))
                 transition();           
+=======
+                convertOperation($("#cmbFrom").val(), false);
+                
+                // animate UI by hiding the input area, and showing the results area
+                $("#input").addClass("inputHidden");
+                $("#input").css("visibility", "hidden");
+                $("#results").addClass("showResult");
+                $("#results").css("visibility", "visible");
+                
+            }
+            else {
+                alert("You input is invalid for any number system.", clearInput, "MathCam", "OK");
+            } 
+            
+            
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f
         });
         
         // convert another button click event
         $("#btnAnother").click(function () {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f
             $("#results").removeClass("showResult");
             $("#results").css("visibility", "hidden");
             $("#input").css("visibility", "visible");
             $("#input").removeClass("inputHidden");
             
+<<<<<<< HEAD
 
+=======
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f
             clearInput();
         });
         
@@ -277,6 +389,7 @@ var app = {
             $("#cmbFrom").selectmenu("refresh");
             
             // update given number and do the conversion
+<<<<<<< HEAD
             $("#convNum").html(Converter.addBaseNumber($("#cmbFrom").val(), $("#hidNum").val()));
             convertOperation($("#hidNum").val(), $("#cmbFrom").val());
         });
@@ -443,12 +556,22 @@ var app = {
             $("#useImage").addClass("ui-state-disabled");
         });
 
+=======
+            $("#convNum").html(Converter.addBaseNumber($("#cmbFrom").val(), $("#txtNumber").val().toUpperCase()));
+            convertOperation($("#cmbFrom").val(), false); 
+        });
+        
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f
     },
     
     onDeviceReady: function() {
         // any CORDOVA initialization comes here
         window.alert = navigator.notification.alert;
         window.confirm = navigator.notification.confirm;
+<<<<<<< HEAD
+=======
+        
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f
     },
     
     loadImage: function(imgURI) {
@@ -459,13 +582,19 @@ var app = {
         $("#imgPlaceholder").width("100%");
         $("#imgPlaceholder").height("100%");
         $("#imgPlaceholder").css("max-height", $(window).height() * 0.5);
+<<<<<<< HEAD
         $("#imgDesc").html("You can select an area of the image to scan a text.");
         $("#useImage").removeClass("ui-state-disabled");
 
+=======
+        $("#imgDesc").hide();
+        
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f
         // reposition popup
         setInterval(function() {
             $("#cameraDialog").popup("reposition", { positionTo: "window" });
         }, 300);
+<<<<<<< HEAD
 
         app.setCrop();
     },
@@ -485,6 +614,8 @@ var app = {
     // most important function here
     doOCR: function () {
 
+=======
+>>>>>>> 05f9f83f6a01bc9129309ca4939b8d16e46f441f
     },
     
     onBackButton: function() {
