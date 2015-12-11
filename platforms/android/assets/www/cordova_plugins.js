@@ -7,6 +7,22 @@ module.exports = [
         "runs": true
     },
     {
+        "file": "plugins/cordova-plugin-dialogs/www/notification.js",
+        "id": "cordova-plugin-dialogs.notification",
+        "pluginId": "cordova-plugin-dialogs",
+        "merges": [
+            "navigator.notification"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-dialogs/www/android/notification.js",
+        "id": "cordova-plugin-dialogs.notification_android",
+        "pluginId": "cordova-plugin-dialogs",
+        "merges": [
+            "navigator.notification"
+        ]
+    },
+    {
         "file": "plugins/cordova-plugin-camera/www/CameraConstants.js",
         "id": "cordova-plugin-camera.Camera",
         "pluginId": "cordova-plugin-camera",
@@ -39,19 +55,11 @@ module.exports = [
         ]
     },
     {
-        "file": "plugins/cordova-plugin-dialogs/www/notification.js",
-        "id": "cordova-plugin-dialogs.notification",
-        "pluginId": "cordova-plugin-dialogs",
-        "merges": [
-            "navigator.notification"
-        ]
-    },
-    {
-        "file": "plugins/cordova-plugin-dialogs/www/android/notification.js",
-        "id": "cordova-plugin-dialogs.notification_android",
-        "pluginId": "cordova-plugin-dialogs",
-        "merges": [
-            "navigator.notification"
+        "file": "plugins/com.juleskelly.tesseract/www/tesseractOCR.js",
+        "id": "com.juleskelly.tesseract.TesseractOCR",
+        "pluginId": "com.juleskelly.tesseract",
+        "clobbers": [
+            "tesseractOCR"
         ]
     }
 ];
@@ -59,8 +67,9 @@ module.exports.metadata =
 // TOP OF METADATA
 {
     "cordova-plugin-whitelist": "1.2.0",
+    "cordova-plugin-dialogs": "1.2.0",
     "cordova-plugin-camera": "1.2.0",
-    "cordova-plugin-dialogs": "1.1.2-dev"
+    "com.juleskelly.tesseract": "1.2"
 }
 // BOTTOM OF METADATA
 });

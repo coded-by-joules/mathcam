@@ -1,5 +1,5 @@
 var app = {
-    crop_handle: null,
+    dialog_handler: null,
     // Application Constructor
     initialize: function () {
         "use strict";
@@ -10,9 +10,9 @@ var app = {
         mainPage.addEventListener("touchmove", removeFunc, false);
         this.bindEvents();
     },
-    
+
     // Bind Event Listeners
-    // 
+    //
     // Bind any events that are required on startup. Common events are:
     // 'load', 'deviceready', 'offline', and 'online'.
     // Most functions run in here
@@ -20,26 +20,26 @@ var app = {
         "use strict";
         document.addEventListener('deviceready', this.onDeviceReady, false);
         document.addEventListener('backbutton', this.onBackButton, false);
-        
-        $(document).ready(function () {                
+
+        $(document).ready(function () {
             // Fast click!
             $(function() {
                 FastClick.attach(document.body);
             });
         });
-        
-        // important variables        
+
+        // important variables
         var cameraCallback = this.loadImage;
         var convertedHistory = new History();
-        
+
         // UI imporvements
         $(".convertList").css("max-height", ($(window).height() - 200) + "px");
-        
+
         // function to be invoked when camera returns an error
         var errorMsg = function (msg) {
-          //  alert("Error");   
+          //  alert("Error");
         };
-        
+
         // detects the number system inputted
         // returns an array of possible number systems
         var detectNumberSystem = function (number) {
@@ -49,66 +49,66 @@ var app = {
                 hex_regex = /^[0-9|A-F]+$/,
                 octal_regex = /^[0-7]+$/,
                 ip_regex = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-            
+
             if (ip_regex.test(number)) {
                 number_systems.push("IP Address");
 
                 return number_systems; // return immediately
             }
-            
+
             if (decimal_regex.test(number)) {
-                number_systems.push("Decimal");   
+                number_systems.push("Decimal");
             }
-            
+
             if (binary_regex.test(number)) {
                 number_systems.push("Binary");
             }
-            
+
             if (hex_regex.test(number)) {
-                number_systems.push("Hexadecimal");   
+                number_systems.push("Hexadecimal");
             }
-            
+
             if (octal_regex.test(number)) {
-                number_systems.push("Octal");   
+                number_systems.push("Octal");
             }
-            
+
             return number_systems;
         };
-        
+
         // clears the input box
         var clearInput = function () {
-            $("#txtNumber").val("");  
+            $("#txtNumber").val("");
         };
-        
+
         // adds the number system detected to the combo box
         var updateSystemList = function (num_systems_array) {
             $("#cmbFrom option").remove();
             var system_length = num_systems_array.length;
-            
+
             for (var i = 0; i < system_length; i += 1) {
-                $("#cmbFrom").append("<option value='" + num_systems_array[i] + "'>" + num_systems_array[i] + "</option>");   
+                $("#cmbFrom").append("<option value='" + num_systems_array[i] + "'>" + num_systems_array[i] + "</option>");
             }
-            
+
             $("#cmbFrom").selectmenu("refresh");
         };
-        
+
         var transition = function () {
             $("#input").addClass("inputHidden");
             $("#input").css("visibility", "hidden");
             $("#results").addClass("showResult");
             $("#results").css("visibility", "visible");
         };
-        
+
         // IMPORTANT METHOD HERE
         // converts the input number to the different number systems
         var convertOperation = function (number, givenType) {
             var input_number = number;
-            
+
             if (givenType == "IP Address")
                 $("#viewMe").hide();
             else
                 $("#viewMe").show();
-            
+
             switch (givenType) {
                 case "Decimal":
                     $("#vowel").text("a");
@@ -142,66 +142,71 @@ var app = {
                     $("#vowel").text("an");
                     // IP conversion here
                     $("#ipAns").html(Converter.convertIPAddress(input_number));
-                    
+
                     break;
             }
-        };   
+        };
 
 
         $("#btnCamera").click(function () {
-            navigator.camera.getPicture(cameraCallback, errorMsg, { quality: 50, 
+            navigator.camera.getPicture(cameraCallback, errorMsg, { quality: 50,
                                                               destinationType: Camera.DestinationType.FILE_URI,
-                                                                  saveToPhotoAlbum: true});               
+                                                                allowEdit: true});
         });
-        
+
         // import event handler
         $("#btnImport").click(function() {
            navigator.camera.getPicture(cameraCallback, errorMsg, {quality: 50,
                                                                  destinationType: Camera.DestinationType.FILE_URI,
-                                                                 sourceType: Camera.PictureSourceType.PHOTOLIBRARY});
-        });    
-                
+                                                                 sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
+                                                               allowEdit: true});
+        });
+
         // camera popup event handler
         $("#cameraPopup").click(function(e) {
             e.preventDefault();
-            
+
             if ($("#imgPlaceholder").attr("src")) {
-                $("#imgPlaceholder").removeAttr("src"); 
+                $("#imgPlaceholder").removeAttr("src");
                 $("#imgPlaceholder").height("0px");
                 $("#imgDesc").show();
             }
-            
+
             $("#cameraDialog").popup("open", {transition: "fade", positionTo: "window"});
+
+            app.dialog_handler = setInterval(function () {
+              $("#cameraDialog").popup("reposition", {positionTo: "window"});
+            }, 100);
         });
 
-        
+
         // MAIN convert function
         var convert = function (number, saveToHistory) {
             var num_systems_detected = detectNumberSystem(number.toUpperCase());
             var detected_count = num_systems_detected.length;
-            
+
             // copy input to area
             $("#convNum").html(Converter.addBaseNumber(num_systems_detected[0], number.toUpperCase()));
             $("#hidNum").val(number);
-            
+
             // convert the number and it's possbile number system
             if (detected_count > 0) {
                 updateSystemList(num_systems_detected);
                 convertOperation(number, num_systems_detected[0]);
-                
+
                 // showing/hiding content dependent on the number system detected
                 if (num_systems_detected[0] == "IP Address" && detected_count == 1) {
                     $("#convNum").html(number);
                     $("#numberSystemAns").hide();
                     $("#ipAnswer").show();
-                }                    
-                else {                    
+                }
+                else {
                     $("#numberSystemAns").show();
                     $("#ipAnswer").hide();
                 }
-            
+
                 // save the input to history
-                if (saveToHistory) {        
+                if (saveToHistory) {
                     var exist = false;
 
                     $("#clist li").each(function (i) {
@@ -213,7 +218,7 @@ var app = {
 
                     if (!exist)
                         convertedHistory.AddToList($("#txtNumber").val());
-                    
+
                     var found = false;
 
                     if ($("li.resultList").length > 0) {
@@ -229,12 +234,12 @@ var app = {
                                 }
                             });
 
-                            if (!found) { 
+                            if (!found) {
                                  $("#clistsimp").prepend("<li class='resultList ui-screen-hidden' data-icon='carat-u'><a href='#' class='convItem'>"
                                             + $("#txtNumber").val() + "</a></li>");
                             }
-                        });   
-                    }                    
+                        });
+                    }
                     else
                          $("#clistsimp").prepend("<li class='resultList ui-screen-hidden' data-icon='carat-u'><a href='#' class='convItem'>"
                                     + $("#txtNumber").val() + "</a></li>");
@@ -242,22 +247,22 @@ var app = {
                     $("#clistsimp").listview("refresh");
                     $("#clistsimp li").addClass("ui-screen-hidden");
                 }
-                
+
                 return true;
-                        
+
             }
             else {
                 alert("You input is invalid for any number system or an IP address.", clearInput, "MathCam", "OK");
                 return false;
-            } 
+            }
         };
-        
+
         // convert button click event
         $("#btnConvert").click(function () {
             if (convert($("#txtNumber").val(), true))
-                transition();           
+                transition();
         });
-        
+
         // convert another button click event
         $("#btnAnother").click(function () {
 
@@ -265,82 +270,82 @@ var app = {
             $("#results").css("visibility", "hidden");
             $("#input").css("visibility", "visible");
             $("#input").removeClass("inputHidden");
-            
+
 
             clearInput();
         });
-        
+
         // cmbFrom combobox change event
-        $("#cmbFrom").change(function () { 
+        $("#cmbFrom").change(function () {
             $("#cmbFrom").selectmenu("refresh");
-            
+
             // update given number and do the conversion
             $("#convNum").html(Converter.addBaseNumber($("#cmbFrom").val(), $("#hidNum").val()));
             convertOperation($("#hidNum").val(), $("#cmbFrom").val());
         });
-        
+
         // close panel click event
         $("#closePanel").click(function (e) {
             e.preventDefault();
             $("#historyPanel").panel("close");
         });
-        
+
         // resize list container before opening
         $("#historyPanel").on("panelbeforeopen", function (event, ui) {
-            $(".convertList").css("max-height", ($(window).height() - 200) + "px"); 
-        }); 
-        
+            $(".convertList").css("max-height", ($(window).height() - 200) + "px");
+        });
+
         // show the list on the converted side
         $("#historyPanel").on("panelopen", function (event, ui) {
             var list = convertedHistory.RenderList();
-            
+
             if (list) {
                 var list_length = list.length,
                     i;
-                                
+
                 if ($("#clist li").length == 0) {
                     for (i = 0; i < list_length; i += 1) {
                         var item = "<li data-icon='false'><a href='#' class='convItem'>" + list[i] + "</a></li>";
                         $("#clist").prepend($(item));
-                        
+
                     }
-                    $("#clist").listview("refresh");                                
+                    $("#clist").listview("refresh");
                     $("#clist li").each(function () {
-                        $(this).addClass("showAnim"); 
+                        $(this).addClass("showAnim");
                     });
                 }
-                else {                    
+                else {
                     var item = "", height = 0;
                     for (i = 0; i < list_length; i += 1) {
                        item += "<li data-icon='false'><a href='#' class='convItem'>" + list[i] + "</a></li>";
-                        
+
                     }
-                                        
-                    var $newElem = $(item).prependTo("#clist");                    
-                    $("#clist").listview("refresh"); 
-                    
+
+                    var $newElem = $(item).prependTo("#clist");
+                    $("#clist").listview("refresh");
+
                     $newElem.addClass("showAnim");
-                }   
+                }
             }
         });
-        
+
         // history item click event
         $(document).on("click", ".convItem", function (e) {
-            e.preventDefault();          
+            e.preventDefault();
             $("#clistsimp li").addClass("ui-screen-hidden");
-            
+
             $("#historyPanel").panel("close");
             if (convert($(this).html(), false)) {
                 if ($("#results").css("visibility") == "hidden")
                     transition();
             }
-            
+
         });
-        
+
         // SHOW SOLUTIONS
         $("#blockA").click(function () {
             $("#solutionDetails").html("<b>From " + $("#convNum").html() + " to " + $("#txtDecimal").html() + "</b>");
-            
+
             if ($("#cmbFrom").val() == "Decimal") {
                 $("#solutionContent").html("There's no need for an explanation for that.");
             }
@@ -356,12 +361,12 @@ var app = {
 
             $("#solutionDialog").popup("open", {positionTo: "window", transition: "fade"});
         });
-        
+
         // binary block click event
         $("#blockB").click(function () {
             $("#solutionDetails").html("<b>From " + $("#convNum").html() + " to " + $("#txtBinary").html() + "</b>");
-            
-            if ($("#cmbFrom").val() == "Decimal") {                
+
+            if ($("#cmbFrom").val() == "Decimal") {
                 $("#solutionContent").html(NumberSystemSolution.BinarySolution($("#hidNum").val(), $("#txtBinary").html()).FromDecimal());
             }
             else if ($("#cmbFrom").val() == "Binary") {
@@ -374,13 +379,13 @@ var app = {
                 $("#solutionContent").html(NumberSystemSolution.BinarySolution($("#hidNum").val(), $("#txtBinary").html()).FromOctal());
             }
 
-            $("#solutionDialog").popup("open", {positionTo: "window", transition: "fade"});  
+            $("#solutionDialog").popup("open", {positionTo: "window", transition: "fade"});
         });
-        
-        // hexadecimal block click event 
+
+        // hexadecimal block click event
         $("#blockC").click(function () {
             $("#solutionDetails").html("<b>From " + $("#convNum").html() + " to " + $("#txtHexa").html() + "</b>");
-            
+
             if ($("#cmbFrom").val() == "Decimal") {
                 $("#solutionContent").html(NumberSystemSolution.HexadecimalSolution($("#hidNum").val(), $("#txtHexa").html()).FromDecimal());
             }
@@ -390,18 +395,18 @@ var app = {
             else if ($("#cmbFrom").val() == "Hexadecimal") {
                 $("#solutionContent").html("There's no need for an explanation for that.");
             }
-            else if ($("#cmbFrom").val() == "Octal") {                
+            else if ($("#cmbFrom").val() == "Octal") {
                 $("#solutionContent").html(NumberSystemSolution.HexadecimalSolution($("#hidNum").val(), $("#txtHexa").html()).FromOctal());
             }
 
 
             $("#solutionDialog").popup("open", {positionTo: "window", transition: "fade"});
         });
-        
+
         // octal block click event
         $("#blockD").click(function () {
             $("#solutionDetails").html("<b>From " + $("#convNum").html() + " to " + $("#txtOctal").html() + "</b>");
-            
+
             if ($("#cmbFrom").val() == "Decimal") {
                 $("#solutionContent").html(NumberSystemSolution.OctalSolution($("#hidNum").val(), $("#txtOctal").html()).FromDecimal());
             }
@@ -415,9 +420,9 @@ var app = {
                  $("#solutionContent").html("There's no need for an explanation for that.");
             }
 
-            $("#solutionDialog").popup("open", {positionTo: "window", transition: "fade"});   
+            $("#solutionDialog").popup("open", {positionTo: "window", transition: "fade"});
         });
-        
+
         // solution popup tweaks
         $("#solutionDialog").on("popupbeforeposition", function (event, ui) {
            $("#solutionContent").css("max-height", ($(window).height() * 0.5) + "px");
@@ -429,65 +434,62 @@ var app = {
         $("#ipAns").click(function () {
             $("#solutionDetails").html("<h4>" + $("#hidNum").val() + "</h4>");
             $("#solutionContent").html(NumberSystemSolution.IpAddressSolution($("#convNum").html()));
-            $("#solutionDialog").popup("open", {positionTo: "window", transition: "fade"});   
+            $("#solutionDialog").popup("open", {positionTo: "window", transition: "fade"});
         });
 
         // destory the crop handler
         $("#cameraDialog").on("popupafterclose", function () {
-            app.crop_handle.destroy();
-            $("#imgDesc").html("You can capture the printed number on a piece of paper.")
+            $("#imgDesc").show();
+            $("#imgDesc").html("You can capture the printed number on a piece of paper.");
+            $("#recRes").hide();
+
             $("#imgPlaceholder").attr("src", "");
             $("#imgPlaceholder").height("0px");
             $("#useImage").addClass("ui-state-disabled");
+
+            clearInterval(app.dialog_handler);
         });
 
     },
-    
+
     onDeviceReady: function() {
         // any CORDOVA initialization comes here
         window.alert = navigator.notification.alert;
         window.confirm = navigator.notification.confirm;
+
+        // load tesseract engine
+        tesseractOCR.load(function (msg) {
+          console.log(msg);
+        });
     },
-    
+
     loadImage: function(imgURI) {
         var windowWidth = $(window).width();
-        
+
         $("#imgPlaceholder").attr("src", imgURI);
         //$("#imgPlaceholder").width("windowWidth - (windowWidth * 0.4) + "px"");
         $("#imgPlaceholder").width("100%");
         $("#imgPlaceholder").height("100%");
         $("#imgPlaceholder").css("max-height", $(window).height() * 0.5);
-        $("#imgDesc").html("You can select an area of the image to scan a text.");
-        $("#useImage").removeClass("ui-state-disabled");
 
-        // reposition popup
-        setInterval(function() {
-            $("#cameraDialog").popup("reposition", { positionTo: "window" });
-        }, 300);
+        $("#imgDesc").hide();
+        $("#recRes").show();
+        $("#recognitionRes").html("Recognizing...");
 
-        app.setCrop();
-    },
-
-    setCrop: function() {
-        if (app.crop_handle)
-            app.crop_handle.destroy(); // remove crop handle if there is an existing image
-
-        $("#imgPlaceholder").Jcrop({
-            bgOpacity: 0.4,
-            bgFade: true
-        }, function () {
-            app.crop_handle = this;
-        });
+        tesseractOCR.recognizeImage(imgURI, function (msg) {
+          console.log("Recognized text = " + msg);
+          $("#recognitionRes").html(msg);
+        })
     },
 
     // most important function here
     doOCR: function () {
 
     },
-    
+
     onBackButton: function() {
         confirm("Are you sure you want to leave?", backCallback, "MathCam", ["Yes", "No"]);
-        
+
         function backCallback(button) {
             if (button == 1)
                 navigator.app.exitApp(); // app leaves on yes

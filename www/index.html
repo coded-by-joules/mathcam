@@ -5,7 +5,7 @@
         <meta name="format-detection" content="telephone=no" />
         <meta name="msapplication-tap-highlight" content="no" />
         <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, target-densitydpi=medium-dpi, user-scalable=0" />
-        
+
         <!-- MathCam references -->
         <link rel="stylesheet" type="text/css" href="css/themes/mathcam.min.css" />
         <link rel="stylesheet" type="text/css" href="css/themes/jquery.mobile.icons.min.css" />
@@ -14,28 +14,27 @@
         <script src="js/jquery-1.11.3.min.js"></script>
         <script src="js/jquery.mobile-1.4.5.min.js"></script>
         <script type="application/javascript" src="js/fastclick.js"></script>
-        <script src="js/jcrop.js"></script>
         <title>MathCam</title>
     </head>
     <body>
         <div data-role="page" id="mainPage">
-            
+
             <!-- history panel -->
             <div id="historyPanel" data-role="panel" data-position="right" data-display="overlay">
                 <h1>History <a href="#" class="ui-btn ui-icon-delete ui-btn-icon-notext ui-corner-all ui-btn-inline ui-mini" id="closePanel">No text</a></h1>
                 <p>Your recently converted numbers will be listed here. </p>
                 <div class="convertList">
                     <ul data-role="listview" data-inset="true" id="clist">
-                        
+
                     </ul>
                 </div>
             </div>
-            
+
             <div data-role="header">
                 <h3>Number System</h3>
                 <a class="ui-btn-right ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-notext ui-icon-clock" href="#historyPanel">History</a>
             </div>
-            
+
             <div role="main" class="ui-content" id="mainBody">
                 <div id="input" class="inputShown">
                     <div class="ui-grid-a">
@@ -51,7 +50,7 @@
                   </div>
                     <button class="ui-btn ui-corner-all ui-shadow" id="btnConvert">Convert</button>
                 </div> <!-- input -->
-                
+
                 <div id="results" class="hideResult">
                     <!-- details like the number entered and its number system -->
                     <div id="details" class="ui-corner-all custom-corners ui-shadow">
@@ -63,7 +62,7 @@
                                 <p id="convNum">2520</p>
                                 <input type="hidden" id="hidNum" value="" />
                                 <p id="convType">
-                                    This is <span id="vowel">a</span> 
+                                    This is <span id="vowel">a</span>
                                     <select id="cmbFrom" data-inline="true" data-mini="true">
                                         <option value="Decimal">Decimal</option>
                                         <option value="Binary">Binary</option>
@@ -74,7 +73,7 @@
                             </div>
                         </div>
                     </div> <!-- details -->
-                    
+
                     <!-- conversion results area -->
                     <div id="convResults" class="ui-corner-all custom-corners ui-shadow">
                         <div class="ui-bar ui-bar-a">
@@ -84,7 +83,7 @@
                             <p>Tap an answer to view its solution</p>
                             <div class="ui-grid-a contentShadow" id="numberSystemAns">
                                 <div class="ui-block-a answer" id="blockA">
-                                    <h2 id="txtDecimal">254</h2>    
+                                    <h2 id="txtDecimal">254</h2>
                                     <p class="typeDesc">Decimal</p>
                                 </div>
                                 <div class="ui-block-b answer" id="blockB">
@@ -99,7 +98,7 @@
                                     <h2 id="txtOctal">2012</h2>
                                     <p class="typeDesc">Octal</p>
                                 </div>
-                            </div>                        
+                            </div>
                             <div id="ipAnswer">
                                 <button class="showSolution ui-btn" id="ipAns">192.42.12.24</button>
                                 <p>Converted automatically to Binary format</p>
@@ -108,7 +107,7 @@
                     </div> <!-- convResults -->
                     <button class="ui-btn ui-corner-all ui-shadow" id="btnAnother">Convert Another</button>
                 </div> <!-- results -->
-                
+
                 <!-- camera popup dialog -->
                 <div id="cameraDialog" data-role="popup" data-dismissable="false">
                     <div data-role="header">
@@ -120,9 +119,18 @@
                             <p id="imgDesc">You can capture the printed number on a piece of paper.</p>
                             <img id="imgPlaceholder" />
                         </div>
-                        
-                        <div class="ui-grid-solo">
-                            <p class="recognition"></p>
+
+                        <div class="ui-grid-solo" id="recRes">
+                            <div class="ui-corner-all custom-corners">
+                              <div class="ui-bar ui-bar-a">
+                                  <h3>Recognition Results</h3>
+                              </div>
+                              <div class="ui-body ui-body-a">
+                                <p id="recognitionRes">
+                                  <!-- shows the OCR result here -->
+                                </p>
+                              </div>
+                            </div>
                         </div>
                         <div class="ui-grid-a">
                             <div class="ui-block-a">
@@ -135,9 +143,9 @@
                         <div class="ui-grid-solo">
                             <a class="ui-btn ui-corner-all ui-btn-shadow ui-state-disabled" id="useImage" href="#">Use Image</a>
                         </div>
-                    </div>                
+                    </div>
                 </div> <!-- cameraDialog -->
-                
+
                 <div id="solutionDialog" data-role="popup" data-overlay-theme="a">
                     <div data-role="header">
                         <h3>Solution</h3>
@@ -148,11 +156,11 @@
                         </div>
                         <a class="ui-btn ui-corner-all ui-btn-shadow" href="#" data-rel="back">Got It!</a>
                     </div>
-                    
+
                 </div>
             </div> <!-- main -->
         </div> <!-- page -->
-        
+
         <!-- MathCam scripts -->
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
@@ -163,4 +171,4 @@
             app.initialize();
         </script>
     </body>
-</html> 
+</html>
