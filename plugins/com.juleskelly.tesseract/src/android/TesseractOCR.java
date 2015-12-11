@@ -115,7 +115,7 @@ public class TesseractOCR extends CordovaPlugin {
     BitmapFactory.Options options = new BitmapFactory.Options();
     options.inSampleSize = 4;
 
-    imageURL = imageURL.substring(6);
+    imageURL = imageURL.substring(7);
     Log.v(TAG, imageURL);
     Log.v(TAG, "Starting image decoding...");
     Bitmap bitmap = BitmapFactory.decodeFile(imageURL, options);
@@ -179,9 +179,9 @@ public class TesseractOCR extends CordovaPlugin {
       Log.v(TAG, "Scanning completed");
       return;
     }
-    catch (Exception e) {
-      Log.e(TAG, e.getMessage());
-      callbackContext.error(e.getMessage());
+    catch (Exception ex) {
+      Log.e(TAG,ex.getMessage());
+      callbackContext.error(ex.getMessage());
       return;
     }
   }
