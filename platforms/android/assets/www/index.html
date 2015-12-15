@@ -19,20 +19,40 @@
     <body>
         <div data-role="page" id="mainPage">
 
+            <!-- action center panel -->
+            <div id="actionCenter" data-role="panel" data-position="left" data-display="overlay">
+              <h1>MathCam</h1>
+              <ul data-role="listview" id="actionCntr" class="ui-nodisc-icon">
+                <li data-role="collapsible" class="actionHead ui-nodisc-icon" data-inset="false" data-iconpos="right"
+                  data-collapsed-icon="carat-d" data-expanded-icon="carat-u">
+                  <h2 class="collapseHeader">Converters</h2>
+                  <ul data-role="listview" class="actionList">
+                    <li class="actionItem"><a href="#">Number System</a></li>
+                    <li class="actionItem"><a href="#">Length</a></li>
+                    <li class="actionItem"><a href="#">Temperature</a></li>
+                  </ul>
+                </li>
+                <li class="actionItem">
+                  <a href="#">Settings</a>
+                </li>
+              </ul>
+            </div>
+
             <!-- history panel -->
             <div id="historyPanel" data-role="panel" data-position="right" data-display="overlay">
-                <h1>History <a href="#" class="ui-btn ui-icon-delete ui-btn-icon-notext ui-corner-all ui-btn-inline ui-mini" id="closePanel">No text</a></h1>
-                <p>Your recently converted numbers will be listed here. </p>
-                <div class="convertList">
-                    <ul data-role="listview" data-inset="true" id="clist">
+              <h1>History <a href="#" class="ui-btn ui-icon-delete ui-btn-icon-notext ui-corner-all ui-btn-inline ui-mini" id="closePanel">No text</a></h1>
+              <p>Your recently converted numbers will be listed here. </p>
+              <div class="convertList">
+                  <ul data-role="listview" data-inset="true" id="clist">
 
-                    </ul>
-                </div>
+                  </ul>
+              </div>
             </div>
 
             <div data-role="header">
+                <a class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-notext ui-icon-bars ui-nodisc-icon noborder" href="#actionCenter">Menu</a>
                 <h3>Number System</h3>
-                <a class="ui-btn-right ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-notext ui-icon-clock" href="#historyPanel">History</a>
+                <a class="ui-btn-right ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-notext ui-icon-clock ui-nodisc-icon noborder2" href="#historyPanel">History</a>
             </div>
 
             <div role="main" class="ui-content" id="mainBody">
@@ -40,7 +60,7 @@
                     <div class="ui-grid-a">
                         <div class="ui-block-a txtInp"><input type="text" id="txtNumber" placeholder="Enter a number or an IP address" /></div>
                         <div class="ui-block-b btnInp">
-                            <a class="ui-btn ui-icon-camera ui-btn-icon-notext ui-corner-all" href="#" id="cameraPopup">Camera</a>
+                            <a class="ui-btn ui-icon-camera ui-btn-icon-notext ui-corner-all" href="#cameraPage" id="cameraPopup">Camera</a>
                         </div>
                     </div>
                     <div class="convertList">
@@ -108,44 +128,6 @@
                     <button class="ui-btn ui-corner-all ui-shadow" id="btnAnother">Convert Another</button>
                 </div> <!-- results -->
 
-                <!-- camera popup dialog -->
-                <div id="cameraDialog" data-role="popup" data-dismissable="false">
-                    <div data-role="header">
-                        <h1>Take Image</h1>
-                        <a class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right" href="#" data-rel="back">Close</a>
-                    </div>
-                    <div class="ui-content" role="main">
-                        <div id="imgContent">
-                            <p id="imgDesc">You can capture the printed number on a piece of paper.</p>
-                            <img id="imgPlaceholder" />
-                        </div>
-
-                        <div class="ui-grid-solo" id="recRes">
-                            <div class="ui-corner-all custom-corners">
-                              <div class="ui-bar ui-bar-a">
-                                  <h3>Recognition Results</h3>
-                              </div>
-                              <div class="ui-body ui-body-a">
-                                <p id="recognitionRes">
-                                  <!-- shows the OCR result here -->
-                                </p>
-                              </div>
-                            </div>
-                        </div>
-                        <div class="ui-grid-a">
-                            <div class="ui-block-a">
-                                <a class="ui-btn ui-corner-all ui-icon-camera ui-btn-icon-left ui-mini" href="#" id="btnCamera">Capture</a>
-                            </div>
-                            <div class="ui-block-b">
-                                <a class="ui-btn ui-corner-all ui-icon-recycle ui-btn-icon-left ui-mini" href="#" id="btnImport">Import</a>
-                            </div>
-                        </div>
-                        <div class="ui-grid-solo">
-                            <a class="ui-btn ui-corner-all ui-btn-shadow ui-state-disabled" id="useImage" href="#">Use Image</a>
-                        </div>
-                    </div>
-                </div> <!-- cameraDialog -->
-
                 <div id="solutionDialog" data-role="popup" data-overlay-theme="a">
                     <div data-role="header">
                         <h3>Solution</h3>
@@ -160,6 +142,41 @@
                 </div>
             </div> <!-- main -->
         </div> <!-- page -->
+
+        <div id="cameraPage" data-role="page">
+          <div data-role="header">
+            <a class="ui-btn-left ui-btn ui-btn-icon-notext ui-corner-all ui-icon-carat-l ui-nodisc-icon noborder" href="#mainPage">Back</a>
+            <h3>Take an Image</h3>
+          </div>
+          <div role="main" class="ui-content">
+            <p class="descImg">You can capture the printed number on a piece of paper.</p>
+            <div class="ui-grid-a">
+                <div class="ui-block-a">
+                    <a class="ui-btn ui-corner-all ui-icon-camera ui-btn-icon-left ui-mini" href="#" id="btnCamera">Capture</a>
+                </div>
+                <div class="ui-block-b">
+                    <a class="ui-btn ui-corner-all ui-icon-recycle ui-btn-icon-left ui-mini" href="#" id="btnImport">Import</a>
+                </div>
+            </div>
+            <div class="ui-grid-solo">
+              <div id="imgContent">
+                <p id="imgDesc">Image Taken:</p>
+                <img id="imgPlaceholder" />
+              </div>
+              <div class="ui-corner-all custom-corners" id="recRes">
+                <div class="ui-bar ui-bar-a">
+                    <h3>Recognition Results</h3>
+                </div>
+                <div class="ui-body ui-body-a bgrec">
+                  <p id="recognitionRes">
+
+                  </p>
+                </div>
+              </div>
+              <a class="ui-btn ui-corner-all ui-btn-shadow" id="useImage" href="#">Use Number</a>
+            </div>
+          </div>
+        </div>
 
         <!-- MathCam scripts -->
         <script type="text/javascript" src="cordova.js"></script>

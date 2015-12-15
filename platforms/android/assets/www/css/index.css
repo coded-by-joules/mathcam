@@ -29,12 +29,48 @@ body {
   display: none;
 }
 
-div#historyPanel {
+#cameraDialog, #historyPanel {
+  transform: translate3d(0) !important;
+}
+
+div#historyPanel, .bgrec, div#actionCenter, li.actionItem, li.actionHead {
     background-color: #105994 !important;
     color: white !important;
 }
 
-#historyPanel h1 {
+a.noborder {
+  box-shadow: none !important;
+  text-shadow: none !important;
+  border: 0 !important;
+  background-color: transparent !important;
+}
+
+a.noborder2 {
+  box-shadow: none !important;
+  text-shadow: none !important;
+  border: 0 !important;
+}
+
+.bgrec {
+  border: 0px;
+  margin-left: 1px;
+  margin-right: 1px;
+}
+
+#imgDesc {
+  display: none;
+}
+
+div#imgContent {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+#imgPlaceholder {
+  border-radius: 5px;
+}
+
+#historyPanel h1, #actionCenter h1 {
     font-weight: normal;
 }
 
@@ -56,12 +92,46 @@ li {
     transition: all 200ms ease;
 }
 
-li.resultList {
+li.resultList, li.actionItem, li.actionHead {
     -webkit-transform: translate3d(0px,0px,0px);
     -webkit-opacity: 1;
 
     transform: translate3d(0px,0px,0px);
     opacity: 1;
+}
+
+ul#actionCntr {
+  margin-top: 5px !important;
+}
+
+.collapseHeader {
+  margin-top: -12px !important;
+  margin-left: -15px !important;
+  margin-right: -15px !important;
+  margin-bottom: -2px !important;
+}
+
+li.actionHead {
+  border-color: #004675 !important;
+  border-left-width: 0 !important;
+  border-right-width: 0 !important;
+  margin-bottom: -10px !important;
+}
+
+ul.actionList li {
+  margin-top: 2px !important;
+  margin-bottom: -2px !important;
+  margin-left: -15px !important;
+  margin-right: -15px !important;
+}
+
+ul.actionList li a {
+  font-weight: normal;
+  text-indent: 10px;
+}
+
+.ui-collapsible-content {
+    margin-bottom: -4px !important;
 }
 
 li.showAnim {

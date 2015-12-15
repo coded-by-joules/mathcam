@@ -47,12 +47,11 @@ public class TesseractOCR extends CordovaPlugin {
     }
     else if (ACTION_RECOGNIZEIMAGE.equals(action)) {
       JSONObject arg_obj = args.getJSONObject(0);
-      String imagePath = arg_obj.getString("imageURL");
+      final String imagePath = arg_obj.getString("imageURL");
 
       recognizeImage(imagePath, callbackContext);
-    };
-
-
+      return true;
+    }
     return false;
   }
 
@@ -111,18 +110,19 @@ public class TesseractOCR extends CordovaPlugin {
   }
 
   // recognize the image using tesseract
-  public void recognizeImage(String imageURL, final CallbackContext callbackContext) {
+  public void recognizeImage(final String imageURL, final CallbackContext callbackContext) {
     BitmapFactory.Options options = new BitmapFactory.Options();
     options.inSampleSize = 4;
 
-    imageURL = imageURL.substring(7);
-    Log.v(TAG, imageURL);
+    String url = imageURL.substring(7);
+    Log.v(TAG, url);
     Log.v(TAG, "Starting image decoding...");
-    Bitmap bitmap = BitmapFactory.decodeFile(imageURL, options);
+    Bitmap bitmap = BitmapFactory.decodeFile(url, options);
+    String recognized = "";
 
     try {
       // convert captured image to bitmap format
-      ExifInterface exif = new ExifInterface(imageURL);
+      ExifInterface exif = new ExifInterface(url);
       int exifOrientation = exif.getAttributeInt(
         ExifInterface.TAG_ORIENTATION,
         ExifInterface.ORIENTATION_NORMAL
@@ -175,12 +175,15 @@ public class TesseractOCR extends CordovaPlugin {
 			recognizedText = recognizedText.trim();
 			Log.v(TAG, "Recognized Text: " + recognizedText);
 
-      callbackContext.success(recognizedText);
+
       Log.v(TAG, "Scanning completed");
+      recognized = recognizedText;
+      callbackContext.success(recognized);
       return;
     }
     catch (Exception ex) {
       Log.e(TAG,ex.getMessage());
+      recognized = ex.getMessage();
       callbackContext.error(ex.getMessage());
       return;
     }

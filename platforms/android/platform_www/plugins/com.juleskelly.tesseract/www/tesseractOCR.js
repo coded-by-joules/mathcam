@@ -1,11 +1,9 @@
 cordova.define("com.juleskelly.tesseract.TesseractOCR", function(require, exports, module) { var tesseractOCR = {
   // loads the train data
-  load: function (callback) {
+  load: function (callback, errcallback) {
     cordova.exec(
       callback,             // success callback
-      function (err) {      // error callback
-        callback(err);
-      },
+      errcallback,
       "TesseractOCR",       // class name
       "loadEngine",         // method name
       []

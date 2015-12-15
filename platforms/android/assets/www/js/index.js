@@ -34,6 +34,7 @@ var app = {
 
         // UI imporvements
         $(".convertList").css("max-height", ($(window).height() - 200) + "px");
+        $("#useImage").hide();
 
         // function to be invoked when camera returns an error
         var errorMsg = function (msg) {
@@ -151,6 +152,7 @@ var app = {
         $("#btnCamera").click(function () {
             navigator.camera.getPicture(cameraCallback, errorMsg, { quality: 50,
                                                               destinationType: Camera.DestinationType.FILE_URI,
+
                                                                 allowEdit: true});
         });
 
@@ -161,24 +163,6 @@ var app = {
                                                                  sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
                                                                allowEdit: true});
         });
-
-        // camera popup event handler
-        $("#cameraPopup").click(function(e) {
-            e.preventDefault();
-
-            if ($("#imgPlaceholder").attr("src")) {
-                $("#imgPlaceholder").removeAttr("src");
-                $("#imgPlaceholder").height("0px");
-                $("#imgDesc").show();
-            }
-
-            $("#cameraDialog").popup("open", {transition: "fade", positionTo: "window"});
-
-            app.dialog_handler = setInterval(function () {
-              $("#cameraDialog").popup("reposition", {positionTo: "window"});
-            }, 100);
-        });
-
 
         // MAIN convert function
         var convert = function (number, saveToHistory) {
@@ -437,17 +421,19 @@ var app = {
             $("#solutionDialog").popup("open", {positionTo: "window", transition: "fade"});
         });
 
-        // destory the crop handler
-        $("#cameraDialog").on("popupafterclose", function () {
-            $("#imgDesc").show();
-            $("#imgDesc").html("You can capture the printed number on a piece of paper.");
+        $("#useImage").click(function () {
+            // text generated will be placed to the text box
+            $("#txtNumber").val($("#recognitionRes").html());
+
+            $("#imgDesc").hide();
+            $(".descImg").show();
             $("#recRes").hide();
 
             $("#imgPlaceholder").attr("src", "");
             $("#imgPlaceholder").height("0px");
-            $("#useImage").addClass("ui-state-disabled");
+            $("#useImage").hide();
 
-            clearInterval(app.dialog_handler);
+            $( ":mobile-pagecontainer" ).pagecontainer( "change", "#mainPage", {allowSamePageTransition: true});
         });
 
     },
@@ -458,8 +444,11 @@ var app = {
         window.confirm = navigator.notification.confirm;
 
         // load tesseract engine
-        tesseractOCR.load(function (msg) {
-          console.log(msg);
+        tesseractOCR.load(null, function (err) {
+          alert("There is a problem when initializing the application. Please reinstall MathCam and try again.",
+            function () {
+              navigator.app.exitApp();
+            }, "MathCam", "OK");
         });
     },
 
@@ -472,19 +461,25 @@ var app = {
         $("#imgPlaceholder").height("100%");
         $("#imgPlaceholder").css("max-height", $(window).height() * 0.5);
 
-        $("#imgDesc").hide();
         $("#recRes").show();
         $("#recognitionRes").html("Recognizing...");
+        $(".descImg").hide();
 
-        tesseractOCR.recognizeImage(imgURI, function (msg) {
-          console.log("Recognized text = " + msg);
-          $("#recognitionRes").html(msg);
-        })
-    },
+        // OCR Reading
+        setTimeout(function () {
+          tesseractOCR.recognizeImage(imgURI, function (msg) {
+            var result = msg,
+              pattern = /[^A-Fa-f0-9]|\s/g;
 
-    // most important function here
-    doOCR: function () {
-
+            if (pattern.test(result) || result.trim() == "") {
+              $("#recognitionRes").html("Number is unrecognizable");
+            }
+            else {
+              $("#recognitionRes").html(result);
+              $("#imgDesc").show();
+            }
+          });
+        }, 500);
     },
 
     onBackButton: function() {
