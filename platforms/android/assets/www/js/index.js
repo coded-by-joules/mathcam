@@ -1,5 +1,8 @@
 var app = {
     dialog_handler: null,
+    imported: false,
+    fileNumber: window.localStorage.getItem("lastFile"),
+    doneFeedback: (window.localStorage.getItem("doneFeedback") == null ? "false" : "true"),
     // Application Constructor
     initialize: function () {
         "use strict";
@@ -152,8 +155,8 @@ var app = {
         $("#btnCamera").click(function () {
             navigator.camera.getPicture(cameraCallback, errorMsg, { quality: 50,
                                                               destinationType: Camera.DestinationType.FILE_URI,
-
                                                                 allowEdit: true});
+            app.imported = false;
         });
 
         // import event handler
@@ -162,7 +165,27 @@ var app = {
                                                                  destinationType: Camera.DestinationType.FILE_URI,
                                                                  sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
                                                                allowEdit: true});
+           app.imported = true;
         });
+
+        var onConfirmToGoBack = function (buttonIndex) {
+          if (buttonIndex == 1) { // user chooses Yes
+            clearTakeImage();
+          }
+        };
+
+        var clearTakeImage = function () {
+          $("#imgDesc").hide();
+          $(".descImg").show();
+          $("#recRes").hide();
+
+          $("#imgPlaceholder").attr("src", "");
+          $("#imgPlaceholder").height("0px");
+          $("#useImage").hide();
+
+          $("#resultPanel").hide();
+          $( ":mobile-pagecontainer" ).pagecontainer( "change", "#mainPage", {allowSamePageTransition: true});
+        };
 
         // MAIN convert function
         var convert = function (number, saveToHistory) {
@@ -236,7 +259,7 @@ var app = {
 
             }
             else {
-                alert("You input is invalid for any number system or an IP address.", clearInput, "MathCam", "OK");
+                alert("You input is invalid for any number system or an IP address.", null, "MathCam", "OK");
                 return false;
             }
         };
@@ -273,6 +296,11 @@ var app = {
             e.preventDefault();
             $("#historyPanel").panel("close");
         });
+
+        $("#closeAction").click(function (e) {
+          e.preventDefault();
+          $("#actionCenter").panel("close");
+        })
 
         // resize list container before opening
         $("#historyPanel").on("panelbeforeopen", function (event, ui) {
@@ -425,15 +453,22 @@ var app = {
             // text generated will be placed to the text box
             $("#txtNumber").val($("#recognitionRes").html());
 
-            $("#imgDesc").hide();
-            $(".descImg").show();
-            $("#recRes").hide();
+            clearTakeImage();
+        });
 
-            $("#imgPlaceholder").attr("src", "");
-            $("#imgPlaceholder").height("0px");
-            $("#useImage").hide();
+        $("#btnTakeBack").click(function (e) {
+          e.preventDefault();
 
-            $( ":mobile-pagecontainer" ).pagecontainer( "change", "#mainPage", {allowSamePageTransition: true});
+          if ($("#imgPlaceholder").attr("src") != null && $("#imgPlaceholder").attr("src") != "") {
+            confirm(
+              "There is still an image loaded for recognition. Are you sure you want to go back?",
+              onConfirmToGoBack,
+              "MathCam",
+              ["Yes", "No"]);
+          }
+          else {
+            clearTakeImage();
+          }
         });
 
     },
@@ -453,41 +488,96 @@ var app = {
     },
 
     loadImage: function(imgURI) {
-        var windowWidth = $(window).width();
+        if (app.fileNumber != null)
+          app.deleteLastImage();
 
-        $("#imgPlaceholder").attr("src", imgURI);
-        //$("#imgPlaceholder").width("windowWidth - (windowWidth * 0.4) + "px"");
-        $("#imgPlaceholder").width("100%");
-        $("#imgPlaceholder").height("100%");
-        $("#imgPlaceholder").css("max-height", $(window).height() * 0.5);
+        window.resolveLocalFileSystemURL(imgURI, function (fileEntry) {
+          var dirPath = cordova.file.externalRootDirectory + "OCRFolder/";
 
-        $("#recRes").show();
-        $("#recognitionRes").html("Recognizing...");
-        $(".descImg").hide();
+          window.resolveLocalFileSystemURL(dirPath, function (dir) {
+            app.fileNumber = "ocr" + app.generateRandom(100, 999) + ".jpg";
+            localStorage.setItem("lastFile", app.fileNumber);
 
-        // OCR Reading
-        setTimeout(function () {
-          tesseractOCR.recognizeImage(imgURI, function (msg) {
-            var result = msg,
-              pattern = /[^A-Fa-f0-9]|\s/g;
-
-            if (pattern.test(result) || result.trim() == "") {
-              $("#recognitionRes").html("Number is unrecognizable");
+            if (!app.imported) {
+              fileEntry.moveTo(dir, app.fileNumber, app.showImage, app.saveError);
             }
             else {
-              $("#recognitionRes").html(result);
-              $("#imgDesc").show();
+              fileEntry.copyTo(dir, app.fileNumber, app.showImage, app.saveError);
             }
-          });
-        }, 500);
+          }, app.saveError);
+        }, app.saveError);
+    },
+
+    deleteLastImage: function () {
+      var imgPath = cordova.file.externalRootDirectory + "OCRFolder/" + app.fileNumber;
+      window.resolveLocalFileSystemURL(imgPath, function (fileEntry) {
+        fileEntry.remove(null, function () {
+          app.fileNumber = null;
+        });
+      }, app.saveError);
+    },
+
+    generateRandom: function (min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    },
+
+    saveError: function (e) {
+        alert("There is a problem saving the image. Please reinstall MathCam. Error code = " + e.code, null, "MathCam", "OK");
+    },
+
+    showImage: function (imgURI) {
+      var url = cordova.file.externalRootDirectory + "OCRFolder/" + app.fileNumber;
+      var windowWidth = $(window).width();
+
+      $("#imgPlaceholder").attr("src", url);
+      //$("#imgPlaceholder").width("windowWidth - (windowWidth * 0.4) + "px"");
+      $("#imgPlaceholder").width("100%");
+      $("#imgPlaceholder").height("100%");
+      $("#imgPlaceholder").css("max-height", $(window).height() * 0.5);
+
+      $("#useImage").hide();
+      $("#resultPanel").fadeIn("slow");
+      $("#recRes").show();
+      $("#recognitionRes").html("Recognizing...");
+      $(".descImg").hide();
+
+      // OCR Reading
+      setTimeout(function () {
+        tesseractOCR.recognizeImage(url, function (msg) {
+          var result = msg,
+            pattern = /[^A-Fa-f0-9\.]|\s/g;
+
+          if (pattern.test(result) || result.trim() == "") {
+            $("#recognitionRes").html("Number is unrecognizable");
+          }
+          else {
+            $("#recognitionRes").html(result);
+            $("#imgDesc").show();
+            $("#useImage").show();
+          }
+          // $("#recognitionRes").html(msg);
+        });
+      }, 500);
     },
 
     onBackButton: function() {
+        if (!app.doneFeedback) {
+          confirm(
+            "We would like to get your feedback about the application.",
+            app.giveFeedback,
+            "MathCam",
+            ["OK", "Cancel"]);
+        }
         confirm("Are you sure you want to leave?", backCallback, "MathCam", ["Yes", "No"]);
 
         function backCallback(button) {
-            if (button == 1)
+            if (button == 1) {
                 navigator.app.exitApp(); // app leaves on yes
+            }
         };
+    },
+
+    giveFeedback: function (btn) {
+      // feedbacking function here
     }
 };

@@ -18,6 +18,9 @@
         },
         "com.juleskelly.tesseract": {
             "PACKAGE_NAME": "com.juleskelly.mathcam"
+        },
+        "cordova-plugin-file": {
+            "PACKAGE_NAME": "com.juleskelly.mathcam2"
         }
     },
     "dependent_plugins": {}

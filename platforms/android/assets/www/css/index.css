@@ -66,6 +66,10 @@ div#imgContent {
     margin-bottom: 5px;
 }
 
+#resultPanel {
+  display: none;
+}
+
 #imgPlaceholder {
   border-radius: 5px;
 }
