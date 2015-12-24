@@ -1,8 +1,10 @@
 var app = {
     dialog_handler: null,
     imported: false,
-    fileNumber: window.localStorage.getItem("lastFile"),
-    doneFeedback: (window.localStorage.getItem("doneFeedback") == null ? "false" : "true"),
+    fileNumber: localStorage.getItem("lastFile"),
+    doneFeedback: (localStorage.getItem("doneFeedback") != null) ? true : false,
+    userFeedback: (localStorage.getItem("userFeedback") != null) ? JSON.parse(localStorage.getItem("userFeedback")) : {sent: false},
+    feedbackEngine: null,
     // Application Constructor
     initialize: function () {
         "use strict";
@@ -456,6 +458,7 @@ var app = {
             clearTakeImage();
         });
 
+        // button that returns from the camera page to the main page
         $("#btnTakeBack").click(function (e) {
           e.preventDefault();
 
@@ -471,12 +474,65 @@ var app = {
           }
         });
 
+        // feedback submission
+        $("#initForm").submit(function (e) {
+          e.preventDefault();
+          var fData = {
+            "platform": $("#initForm input[name='platform']").val(),
+            "version": $("#initForm input[name='version']").val(),
+            "rating": $("#initForm input[name='rating']:checked").val(),
+            "comment": $("#initForm #comments").val(),
+            "sent": false
+          };
+
+          // save the data to the localStorage
+          localStorage.setItem("userFeedback", JSON.stringify(fData));
+          localStorage.setItem("doneFeedback", true);
+          app.userFeedback = fData;
+          app.doneFeedback = true;
+
+          // attempt to send data to database
+          $("#btnSubmit").val("Submitting...");
+          $("#btnSubmit").addClass("ui-state-disabled");
+          app.sendFeedback();
+
+        });
+
+        // feedback dialog close
+        $("#feedbackDialog").on("popupafterclose", function () {
+          app.exitAppl();
+        });
+
+        // report problem menu item click
+        $("a#reportProb").click(function (e) {
+          e.preventDefault();
+
+          $("#userFeedbackDialog").popup("open", {positionTo: "window", transition: "fade"});
+          $("#actionCenter").panel("close");
+        });
+
+        $("#fdForm").submit(function (e) {
+          e.preventDefault();
+          app.feedbackEngine.AddFeedback($("input[name='shortName']").val(), $("#comm").val(), function () {
+            alert("Your feedback has been submitted successfully", null, "MathCam", "OK");
+            $("#userFeedbackDialog").popup("close", {transition: "fade"});
+            app.feedbackEngine.SendFeedback(null, function (e) {
+                console.log(e);
+            })
+          }, function (e) {
+              console.log(e);
+          });
+        });
     },
 
     onDeviceReady: function() {
         // any CORDOVA initialization comes here
         window.alert = navigator.notification.alert;
         window.confirm = navigator.notification.confirm;
+
+        // set important values
+        $("input[name='platform']").val(device.platform);
+        $("input[name='version']").val(device.version);
 
         // load tesseract engine
         tesseractOCR.load(null, function (err) {
@@ -485,6 +541,15 @@ var app = {
               navigator.app.exitApp();
             }, "MathCam", "OK");
         });
+
+        app.feedbackEngine = new Feedback();
+        
+        if (navigator.connection.type != Connection.NONE) {
+          app.feedbackEngine.SendFeedback(function (e) {
+              console.log(e); }, function (e) {
+            console.log(e);
+          });
+        } // send any unsent feedbacks
     },
 
     loadImage: function(imgURI) {
@@ -540,6 +605,7 @@ var app = {
       $("#recRes").show();
       $("#recognitionRes").html("Recognizing...");
       $(".descImg").hide();
+      $("#imgDesc").show();
 
       // OCR Reading
       setTimeout(function () {
@@ -552,7 +618,6 @@ var app = {
           }
           else {
             $("#recognitionRes").html(result);
-            $("#imgDesc").show();
             $("#useImage").show();
           }
           // $("#recognitionRes").html(msg);
@@ -561,6 +626,11 @@ var app = {
     },
 
     onBackButton: function() {
+      confirm("Are you sure you want to leave?", app.backCallback, "MathCam", ["Yes", "No"]);
+    },
+
+    backCallback: function (button) {
+      if (button == 1) {
         if (!app.doneFeedback) {
           confirm(
             "We would like to get your feedback about the application.",
@@ -568,16 +638,44 @@ var app = {
             "MathCam",
             ["OK", "Cancel"]);
         }
-        confirm("Are you sure you want to leave?", backCallback, "MathCam", ["Yes", "No"]);
+        else {
+          app.sendFeedback();
+        }
+      }
+    },
 
-        function backCallback(button) {
-            if (button == 1) {
-                navigator.app.exitApp(); // app leaves on yes
-            }
-        };
+    exitAppl: function () {
+      navigator.app.exitApp();
     },
 
     giveFeedback: function (btn) {
       // feedbacking function here
+      if (btn == 1) {
+        $("#feedbackDialog").popup("open", {positionTo: "window", transition: "fade"});
+      }
+      else {
+        navigator.app.exitApp();
+      }
+    },
+
+    sendFeedback: function () {
+      var dataF = app.userFeedback;
+
+      if (!dataF.sent) {
+        if (navigator.connection.type != Connection.NONE) {
+          $.post("http://www.mathcam.esy.es/initFeedback.php", dataF).done(function (data) {
+            console.log(data);
+            dataF.sent = true;
+            localStorage.setItem("userFeedback", JSON.stringify(dataF));
+            alert("Your feedback will be submitted. Thanks for that!", app.exitAppl, "MathCam", "OK");
+          });
+        }
+        else {
+          app.exitAppl();
+        }
+      }
+      else {
+        app.exitAppl();
+      }
     }
 };

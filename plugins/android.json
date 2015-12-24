@@ -21,6 +21,12 @@
         },
         "cordova-plugin-file": {
             "PACKAGE_NAME": "com.juleskelly.mathcam2"
+        },
+        "cordova-plugin-device": {
+            "PACKAGE_NAME": "com.juleskelly.mathcam2"
+        },
+        "cordova-plugin-network-information": {
+            "PACKAGE_NAME": "com.juleskelly.mathcam2"
         }
     },
     "dependent_plugins": {}

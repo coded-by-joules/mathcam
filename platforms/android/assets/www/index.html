@@ -33,7 +33,7 @@
                   </ul>
                 </li>
                 <li class="actionItem">
-                  <a href="#">Feedback</a>
+                  <a href="#"  id="reportProb">Report a Problem</a>
               </ul>
             </div>
 
@@ -127,6 +127,7 @@
                     <button class="ui-btn ui-corner-all ui-shadow" id="btnAnother">Convert Another</button>
                 </div> <!-- results -->
 
+                <!-- solution dialog -->
                 <div id="solutionDialog" data-role="popup" data-overlay-theme="a">
                     <div data-role="header">
                         <h3>Solution</h3>
@@ -137,7 +138,53 @@
                         </div>
                         <a class="ui-btn ui-corner-all ui-btn-shadow" href="#" data-rel="back">Got It!</a>
                     </div>
+                </div>
 
+                <!-- initial feedback dialog -->
+                <div id="feedbackDialog" data-role="popup" data-overlay-theme="a">
+                  <div data-role="header">
+                      <h3>Tell us!</h3>
+                      <a class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right" href="#" data-rel="back">Close</a>
+                  </div>
+                  <div class="ui-content" role="main">
+                    <form action="http://www.mathcam.esy.es/initFeedback.php" method="POST" id="initForm">
+                      <input type="hidden" name="platform" />
+                      <input type="hidden" name="version" />
+                      <input type="hidden" name="dateSubmitted" />
+                      <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
+                        <legend>Rate the app:</legend>
+                        <input name="rating" type="radio" id="rateA" checked="checked" value="Too Bad" />
+                        <label for="rateA">Too Bad</label>
+                        <input name="rating" type="radio" id="rateB" value="Bad" />
+                        <label for="rateB">Bad</label>
+                        <input name="rating" type="radio" id="rateC" value="Good" />
+                        <label for="rateC">Good</label>
+                        <input name="rating" type="radio" id="rateD" value="Too Good" />
+                        <label for="rateD">Too Good</label>
+                      </fieldset>
+                      <p>
+                        <textarea name="comment" placeholder="Comments (optional)" id="comments"></textarea>
+                      </p>
+                      <input type="submit" value="Submit" id="btnSubmit">
+                    </form>
+                  </div>
+                </div> <!-- end feedback dialog -->
+
+                <div id="userFeedbackDialog" data-role="popup" data-overlay-theme="a">
+                  <div data-role="header">
+                    <h3>Report a Problem</h3>
+                    <a class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right" href="#" data-rel="back">Close</a>
+                  </div>
+                  <div class="ui-content" role="main">
+                    <form action="http://www.mathcam.esy.es/userFeedback.php" method="POST" id="fdForm">
+                      <p>We would like to know what is bothering you...</p>
+                      <p><input type="text" name="shortName" placeholder="Short Name"/></p>
+                      <p>
+                        <textarea name="comment" placeholder="Comments" id="comm"></textarea>
+                      </p>
+                      <input type="submit" value="Submit" id="btnSendFeedback" />
+                    </form>
+                  </div>
                 </div>
             </div> <!-- main -->
         </div> <!-- page -->
@@ -184,6 +231,7 @@
         <script type="text/javascript" src="js/converters.js"></script>
         <script type="text/javascript" src="js/history.js"></script>
         <script type="text/javascript" src="js/solutions.js"></script>
+        <script type="text/javascript" src="js/feedback.js"></script>
         <script type="text/javascript">
             app.initialize();
         </script>
