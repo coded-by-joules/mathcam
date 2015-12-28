@@ -27,6 +27,9 @@
         },
         "cordova-plugin-network-information": {
             "PACKAGE_NAME": "com.juleskelly.mathcam2"
+        },
+        "cordova-plugin-crop": {
+            "PACKAGE_NAME": "com.juleskelly.mathcam2"
         }
     },
     "dependent_plugins": {}

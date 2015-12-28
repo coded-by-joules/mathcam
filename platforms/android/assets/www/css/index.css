@@ -170,8 +170,66 @@ div.inputHidden {
     transform: translate3d(0px, -50px, 0px);
 }
 
-div.txtInp {
-    width: 88% !important;
+#inputGrp .ui-block-a {
+    width: 64% !important;    
+}
+
+#inputGrp .ui-block-b {
+    width: 18% !important;
+}
+
+
+#inputGrp .ui-block-c {
+    width: 18% !important;
+}
+
+#inputGrp .ui-controlgroup-controls {
+    width: 100% !important;
+} 
+
+.controlgroup-textinput {
+    padding-top:.22em;
+    padding-bottom:.22em;
+}
+
+a#cameraPopup {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+#toggleSys {
+    text-overflow: clip;
+}
+
+#toggleSys span {
+    font-size: 9pt;
+}
+
+div#eqAns {
+   font-size: 18pt;
+   padding-top: 8px;
+   text-align: center;
+   font-weight: bold; 
+}
+
+input#txtNumber::-webkit-input-placeholder {
+    color: gray !important;
+    text-shadow: none !important;
+}
+
+input#txtNumber::-ms-input-placeholder {
+    color: gray !important;
+    text-shadow: none !important;
+}
+
+input#txtNumber {
+    color: black;
+    text-shadow: none;
+    font-weight: normal;
+}
+
+.ui-input-text {
+    background-color: rgba(255,255,255,1) !important;
 }
 
 div.btnInp {
@@ -221,9 +279,9 @@ div.hideResult {
 
 div.showResult  {
     -webkit-opacity: 1;
-    -webkit-transform: translate3d(0px, -110px, 0px);
+    -webkit-transform: translate3d(0px, -170px, 0px);
     opacity: 1;
-    transform: translate3d(0px, -110px, 0px);
+    transform: translate3d(0px, -170px, 0px);
 }
 
 .contentBody {

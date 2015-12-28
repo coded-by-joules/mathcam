@@ -253,6 +253,14 @@ module.exports = [
         "clobbers": [
             "Connection"
         ]
+    },
+    {
+        "file": "plugins/cordova-plugin-crop/www/crop.js",
+        "id": "cordova-plugin-crop.CropPlugin",
+        "pluginId": "cordova-plugin-crop",
+        "clobbers": [
+            "plugins.crop"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -264,7 +272,8 @@ module.exports.metadata =
     "com.juleskelly.tesseract": "1.2",
     "cordova-plugin-file": "3.0.0",
     "cordova-plugin-device": "1.1.0",
-    "cordova-plugin-network-information": "1.1.0"
+    "cordova-plugin-network-information": "1.1.0",
+    "cordova-plugin-crop": "0.1.0"
 }
 // BOTTOM OF METADATA
 });

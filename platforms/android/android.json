@@ -35,6 +35,10 @@
                         {
                             "xml": "<feature name=\"NetworkStatus\"><param name=\"android-package\" value=\"org.apache.cordova.networkinformation.NetworkManager\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"CropPlugin\"><param name=\"android-package\" value=\"com.jeduan.crop.CropPlugin\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -48,6 +52,18 @@
                         },
                         {
                             "xml": "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />",
+                            "count": 1
+                        }
+                    ],
+                    "/manifest/application": [
+                        {
+                            "xml": "<activity android:name=\"com.soundcloud.android.crop.CropImageActivity\" />",
+                            "count": 1
+                        }
+                    ],
+                    "/manifest": [
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\" />",
                             "count": 1
                         }
                     ]
@@ -85,6 +101,9 @@
             "PACKAGE_NAME": "com.juleskelly.mathcam2"
         },
         "cordova-plugin-network-information": {
+            "PACKAGE_NAME": "com.juleskelly.mathcam2"
+        },
+        "cordova-plugin-crop": {
             "PACKAGE_NAME": "com.juleskelly.mathcam2"
         }
     },
@@ -343,6 +362,14 @@
             "clobbers": [
                 "Connection"
             ]
+        },
+        {
+            "file": "plugins/cordova-plugin-crop/www/crop.js",
+            "id": "cordova-plugin-crop.CropPlugin",
+            "pluginId": "cordova-plugin-crop",
+            "clobbers": [
+                "plugins.crop"
+            ]
         }
     ],
     "plugin_metadata": {
@@ -352,6 +379,7 @@
         "com.juleskelly.tesseract": "1.2",
         "cordova-plugin-file": "3.0.0",
         "cordova-plugin-device": "1.1.0",
-        "cordova-plugin-network-information": "1.1.0"
+        "cordova-plugin-network-information": "1.1.0",
+        "cordova-plugin-crop": "0.1.0"
     }
 }

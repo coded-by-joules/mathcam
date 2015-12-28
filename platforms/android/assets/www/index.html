@@ -55,13 +55,30 @@
             </div>
 
             <div role="main" class="ui-content" id="mainBody">
-                <div id="input" class="inputShown">
-                    <div class="ui-grid-a">
-                        <div class="ui-block-a txtInp"><input type="text" id="txtNumber" placeholder="Enter a number or an IP address" /></div>
-                        <div class="ui-block-b btnInp">
-                            <a class="ui-btn ui-icon-camera ui-btn-icon-notext ui-corner-all" href="#cameraPage" id="cameraPopup">Camera</a>
+                <div id="input" class="inputShown">                
+                    <label for="txtNumber" class="ui-hidden-accessible">Number</label>
+                    <div data-role="controlgroup" data-type="horizontal" id="inputGrp" class="ui-grid-b">
+                        <div class="ui-block-a">
+                            <input id="txtNumber" type="text" placeholder="Type a number or IP" data-wrapper-class="controlgroup-textinput ui-btn" />
                         </div>
+                        <div class="ui-block-b">
+                        <a class="ui-btn" id="toggleSys" href="#">
+                            <span>Any</span>
+                        </a>
+                        </div>
+                        <div class="ui-block-c">
+                            <a class="ui-btn ui-icon-camera ui-btn-icon-notext ui-corner-all" href="#" id="cameraPopup">Camera</a>
+                        </div>                        
                     </div>
+                    <!--<div class="ui-grid-a">
+                        <div class="ui-block-a txtInp"><input type="text" id="txtNumber" placeholder="Enter a number or an IP address" /></div>                        
+                        <div class="ui-block-b btnInp">
+                            <a class="ui-btn ui-icon-camera ui-btn-icon-notext ui-corner-all" href="#" id="cameraPopup">Camera</a>
+                        </div>
+                    </div>-->
+                    <p id="equationArea">
+                      <b>TIP: </b>Type an equation and the answer will be shown here.
+                    </p>
                     <div class="convertList">
                         <ul data-role="listview" data-inset="true" id="clistsimp" data-filter="true" data-filter-reveal="true" data-input="#txtNumber">
 
@@ -229,6 +246,7 @@
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript" src="js/converters.js"></script>
+        <script type="text/javascript" src="js/equation.js"></script>
         <script type="text/javascript" src="js/history.js"></script>
         <script type="text/javascript" src="js/solutions.js"></script>
         <script type="text/javascript" src="js/feedback.js"></script>

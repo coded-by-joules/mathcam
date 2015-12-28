@@ -1,10 +1,14 @@
 var app = {
+    
+    // global variables
     dialog_handler: null,
     imported: false,
     fileNumber: localStorage.getItem("lastFile"),
     doneFeedback: (localStorage.getItem("doneFeedback") != null) ? true : false,
     userFeedback: (localStorage.getItem("userFeedback") != null) ? JSON.parse(localStorage.getItem("userFeedback")) : {sent: false},
     feedbackEngine: null,
+    isEquation: false,
+    
     // Application Constructor
     initialize: function () {
         "use strict";
@@ -48,6 +52,7 @@ var app = {
 
         // detects the number system inputted
         // returns an array of possible number systems
+        
         var detectNumberSystem = function (number) {
             var number_systems = [],
                 decimal_regex = /^\d+$/,
@@ -84,6 +89,8 @@ var app = {
         // clears the input box
         var clearInput = function () {
             $("#txtNumber").val("");
+            app.isEquation = false;
+            $("#equationArea").html("<b>TIP:</b> Type an equation and the answer will be shown here.");
         };
 
         // adds the number system detected to the combo box
@@ -103,6 +110,8 @@ var app = {
             $("#input").css("visibility", "hidden");
             $("#results").addClass("showResult");
             $("#results").css("visibility", "visible");
+            
+            $(document).undelegate(".ui-content", "scrollstart", false);
         };
 
         // IMPORTANT METHOD HERE
@@ -157,7 +166,8 @@ var app = {
         $("#btnCamera").click(function () {
             navigator.camera.getPicture(cameraCallback, errorMsg, { quality: 50,
                                                               destinationType: Camera.DestinationType.FILE_URI,
-                                                                allowEdit: true});
+                                                            correctOrientation: true,
+                                                            saveToPhotoAlbum: true});
             app.imported = false;
         });
 
@@ -166,7 +176,7 @@ var app = {
            navigator.camera.getPicture(cameraCallback, errorMsg, {quality: 50,
                                                                  destinationType: Camera.DestinationType.FILE_URI,
                                                                  sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
-                                                               allowEdit: true});
+                                                               correctOrientation: true});
            app.imported = true;
         });
 
@@ -186,14 +196,48 @@ var app = {
           $("#useImage").hide();
 
           $("#resultPanel").hide();
+          $(document).delegate(".ui-content", "scrollstart", false);
           $( ":mobile-pagecontainer" ).pagecontainer( "change", "#mainPage", {allowSamePageTransition: true});
+        };
+        
+        // validating convert function
+        var validateNumber = function (number, systemsAvailable, selectedSystem) {
+            var decimal_regex = /^\d+$/,
+                binary_regex = /^[0-1]+$/,
+                hex_regex = /^[0-9|A-F]+$/,
+                octal_regex = /^[0-7]+$/,
+                number_of_systems = systemsAvailable.length,
+                number_systems = {
+                    Dec: "Decimal",
+                    Bin: "Binary",
+                    Hex: "Hexadecimal",
+                    Oct: "Octal"
+                },
+                test_system = {
+                    Dec: decimal_regex,
+                    Bin: binary_regex,
+                    Hex: hex_regex,
+                    Oct: octal_regex
+                };
+                
+            
+            for (var i = 0; i < number_of_systems; i += 1) {
+                console.log(systemsAvailable[i]);
+                if (systemsAvailable[i] === number_systems[selectedSystem]) {                    
+                  if (test_system[selectedSystem].test(number))
+                    return true;  
+                }
+            }            
+                         
+            return false;
         };
 
         // MAIN convert function
-        var convert = function (number, saveToHistory) {
+        var convert = function (number, saveToHistory) {          
             var num_systems_detected = detectNumberSystem(number.toUpperCase());
             var detected_count = num_systems_detected.length;
-
+            var selected_system = $("#toggleSys span").html();
+                    
             // copy input to area
             $("#convNum").html(Converter.addBaseNumber(num_systems_detected[0], number.toUpperCase()));
             $("#hidNum").val(number);
@@ -201,7 +245,39 @@ var app = {
             // convert the number and it's possbile number system
             if (detected_count > 0) {
                 updateSystemList(num_systems_detected);
-                convertOperation(number, num_systems_detected[0]);
+                
+                if (num_systems_detected[0] == "IP Address" || selected_system == "Any")
+                    convertOperation(number, num_systems_detected[0]);
+                else {
+                    // in some instances, when the user chooses a number system, it may not be valid for his input
+                    // so it's better to double check it (again)
+                    console.log(selected_system);
+                    if (validateNumber(number, num_systems_detected, selected_system)) {
+                        switch (selected_system) {
+                            case "Dec":
+                                $("#cmbFrom").val("Decimal");
+                                convertOperation(number, "Decimal");
+                                break;
+                            case "Bin":
+                                $("#cmbFrom").val("Binary");
+                                convertOperation(number, "Binary");
+                                break;
+                            case "Hex":
+                                $("#cmbFrom").val("Hexadecimal");
+                                convertOperation(number, "Hexadecimal");
+                                break;
+                            case "Oct":
+                                $("#cmbFrom").val("Octal");
+                                convertOperation(number, "Octal");
+                                break;
+                        }
+                    }
+                    else {
+                        alert("You've selected a number system that is not valid to the one you've entered.", null, "MathCam", "OK");
+                        return false;
+                    }
+                        
+                }
 
                 // showing/hiding content dependent on the number system detected
                 if (num_systems_detected[0] == "IP Address" && detected_count == 1) {
@@ -268,6 +344,11 @@ var app = {
 
         // convert button click event
         $("#btnConvert").click(function () {
+            // transfer the value of the answer if the input is an equation
+            if (app.isEquation) {
+                $("#txtNumber").val($("div#eqAns").html());                   
+            }
+            
             if (convert($("#txtNumber").val(), true))
                 transition();
         });
@@ -280,7 +361,7 @@ var app = {
             $("#input").css("visibility", "visible");
             $("#input").removeClass("inputHidden");
 
-
+            $(document).delegate(".ui-content", "scrollstart", false);
             clearInput();
         });
 
@@ -291,6 +372,32 @@ var app = {
             // update given number and do the conversion
             $("#convNum").html(Converter.addBaseNumber($("#cmbFrom").val(), $("#hidNum").val()));
             convertOperation($("#hidNum").val(), $("#cmbFrom").val());
+        });
+        
+        // toggleSys button click event 
+        $("#toggleSys").click(function (e) {
+            e.preventDefault();
+            var $txt = $(this).children("span");
+            
+            $txt.fadeOut("fast", function () {
+                switch ($txt.html()) {
+                    case "Any":
+                        $txt.html("Dec");
+                        break;
+                    case "Dec":
+                        $txt.html("Bin");
+                        break;
+                    case "Bin":
+                        $txt.html("Hex");
+                        break;
+                    case "Hex":
+                        $txt.html("Oct");
+                        break;
+                    case "Oct":
+                        $txt.html("Any");
+                        break;
+                }            
+            }).fadeIn("fast");
         });
 
         // close panel click event
@@ -349,6 +456,8 @@ var app = {
             $("#clistsimp li").addClass("ui-screen-hidden");
 
             $("#historyPanel").panel("close");
+            // switch to Any
+            $("#toggleSys span").html("Any");
             if (convert($(this).html(), false)) {
                 if ($("#results").css("visibility") == "hidden")
                     transition();
@@ -450,6 +559,37 @@ var app = {
             $("#solutionContent").html(NumberSystemSolution.IpAddressSolution($("#convNum").html()));
             $("#solutionDialog").popup("open", {positionTo: "window", transition: "fade"});
         });
+        
+        // text input event.. checks if the input is a number or an equation
+        $("#txtNumber").on("input", function () {
+           var equationCheck = /[\[\]\+\-\*\/\(\)]/g;
+           
+           if (equationCheck.test($("#txtNumber").val().trim())) {
+               $("#equationArea").html("Solving...");
+               
+               // validate the equation, and show the answer
+               setTimeout(function () {
+                   var eq = new Equation($("#txtNumber").val().trim());
+                   var ans = eq.SolvePostfix(eq.ToPostfix(), $("#txtNumber").val().trim()).toUpperCase();
+                   
+                   if (ans.toString() == "NAN") {
+                       $("#equationArea").html("Equation incomplete... Keep going...");
+                       app.isEquation = false;
+                   }
+                   else {
+                       var str = "<div class='ui-grid-a'>"
+                        + "<div class='ui-block-a' id='eqAns'>" + ans + "</div>"
+                        + "<div class='ui-block-b'><a href='#' class='ui-btn ui-mini ui-btn-icon-left ui-icon-info ui-corner-all' id='btnEditEquation'>Edit Equation</a></div>"
+                        + "</div>";
+                        $("#equationArea").html(str);
+                        app.isEquation = true;
+                   }
+               }, 1000);
+           } 
+           else {
+               $("#equationArea").html("<b>TIP:</b> Type an equation and the answer will be shown here.");
+           }
+        });
 
         $("#useImage").click(function () {
             // text generated will be placed to the text box
@@ -457,6 +597,14 @@ var app = {
 
             clearTakeImage();
         });
+        
+        // loads the camera page
+        $("#cameraPopup").click(function (e) {
+            e.preventDefault();
+            
+            $(document).undelegate(".ui-content", "scrollstart", false);
+          $( ":mobile-pagecontainer" ).pagecontainer( "change", "#cameraPage", {allowSamePageTransition: true});
+        })
 
         // button that returns from the camera page to the main page
         $("#btnTakeBack").click(function (e) {
@@ -514,7 +662,9 @@ var app = {
         $("#fdForm").submit(function (e) {
           e.preventDefault();
           app.feedbackEngine.AddFeedback($("input[name='shortName']").val(), $("#comm").val(), function () {
-            alert("Your feedback has been submitted successfully", null, "MathCam", "OK");
+            alert("Your feedback has been submitted successfully", function () {
+             $(document).scrollTop();   
+            }, "MathCam", "OK");
             $("#userFeedbackDialog").popup("close", {transition: "fade"});
             app.feedbackEngine.SendFeedback(null, function (e) {
                 console.log(e);
@@ -543,36 +693,51 @@ var app = {
         });
 
         app.feedbackEngine = new Feedback();
-        
+
         if (navigator.connection.type != Connection.NONE) {
           app.feedbackEngine.SendFeedback(function (e) {
               console.log(e); }, function (e) {
             console.log(e);
           });
         } // send any unsent feedbacks
+
+        // disable vertical scrolling
+        $(document).delegate(".ui-content", "scrollstart", false);
+        $(document).delegate("#actionCenter", "scrollstart", false);
+        $(document).delegate("#historyPanel", "scrollstart", false);
+        
     },
 
     loadImage: function(imgURI) {
-        if (app.fileNumber != null)
-          app.deleteLastImage();
-
-        window.resolveLocalFileSystemURL(imgURI, function (fileEntry) {
-          var dirPath = cordova.file.externalRootDirectory + "OCRFolder/";
-
-          window.resolveLocalFileSystemURL(dirPath, function (dir) {
-            app.fileNumber = "ocr" + app.generateRandom(100, 999) + ".jpg";
-            localStorage.setItem("lastFile", app.fileNumber);
-
-            if (!app.imported) {
-              fileEntry.moveTo(dir, app.fileNumber, app.showImage, app.saveError);
+        // ask user if image will be cropped or not
+        confirm("Crop the image?", function (index) {
+            if (index == 1) {
+                plugins.crop(function (newPath) {
+                    app.imgOperation(newPath);
+                }, null, imgURI, {quality: 100});
             }
-            else {
-              fileEntry.copyTo(dir, app.fileNumber, app.showImage, app.saveError);
-            }
-          }, app.saveError);
-        }, app.saveError);
+            else
+                app.imgOperation(imgURI);
+        }, "MathCam", ["Yes", "No"]);
+        
     },
 
+    imgOperation: function (newPath) {
+        if (app.fileNumber != null)
+            app.deleteLastImage();
+
+          window.resolveLocalFileSystemURL(newPath, function (fileEntry) {
+            var dirPath = cordova.file.externalRootDirectory + "OCRFolder/";
+
+            window.resolveLocalFileSystemURL(dirPath, function (dir) {
+              app.fileNumber = "ocr" + app.generateRandom(100, 999) + ".jpg";
+              localStorage.setItem("lastFile", app.fileNumber);
+
+              fileEntry.copyTo(dir, app.fileNumber, app.showImage, app.saveError);
+            }, app.saveError);
+          }, app.saveError);
+    },
+    
     deleteLastImage: function () {
       var imgPath = cordova.file.externalRootDirectory + "OCRFolder/" + app.fileNumber;
       window.resolveLocalFileSystemURL(imgPath, function (fileEntry) {
