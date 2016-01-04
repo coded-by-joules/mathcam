@@ -24,16 +24,11 @@ body {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
     background: #0071BC;
 }*/
-
-#recRes {
-  display: none;
-}
-
 #cameraDialog, #historyPanel {
   transform: translate3d(0) !important;
 }
 
-div#historyPanel, .bgrec, div#actionCenter, li.actionItem, li.actionHead {
+div#historyPanel, div#actionCenter, li.actionItem, li.actionHead {
     background-color: #105994 !important;
     color: white !important;
 }
@@ -51,10 +46,23 @@ a.noborder2 {
   border: 0 !important;
 }
 
+.noborder3:after {
+  background-color: transparent;
+}
+
+span#rdesc {
+  font-weight: bold;
+}
+
 .bgrec {
   border: 0px;
   margin-left: 1px;
   margin-right: 1px;
+}
+
+p#recognitionRes {
+  font-size: 12pt;
+  text-align: middle;
 }
 
 #imgDesc {
@@ -197,6 +205,12 @@ a#cameraPopup {
     border-bottom-right-radius: 5px;
 }
 
+
+p#equationArea {
+  display: none;
+}
+
+
 #toggleSys {
     text-overflow: clip;
 }
@@ -205,11 +219,66 @@ a#cameraPopup {
     font-size: 9pt;
 }
 
-div#eqAns {
+div#eqAns, p#eqAnswer {
    font-size: 18pt;
    padding-top: 8px;
    text-align: center;
-   font-weight: bold; 
+   font-weight: bold;
+   text-overflow: ellipsis;
+   white-space: nowrap;
+   overflow: hidden;
+}
+
+sub.subSys {
+  font-size: 8pt;
+}
+
+span.valueEquation {
+  text-overflow: ellipsis;
+   white-space: nowrap;
+   overflow: hidden;
+}
+
+table.ui-responsive {
+  width: 100% !important;
+}
+
+table.number-list td {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+table.number-list thead th,
+table.number-list tbody tr:last-child {
+  border-bottom: 1px solid #d6d6d6;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+table.number-list tbody th,
+table.number-list tbody td {
+    border-bottom: 1px solid #e6e6e6; /* non-RGBA fallback  */
+    border-bottom: 1px solid rgba(0,0,0,.05);
+}
+table.number-list tbody tr:last-child th,
+table.number-list tbody tr:last-child td {
+    border-bottom: 0;
+}
+table.number-list tbody tr:nth-child(odd) td,
+table.number-list tbody tr:nth-child(odd) th {
+    background-color: #eeeeee; /* non-RGBA fallback  */
+    background-color: rgba(0,0,0,.04);
+}
+
+.ui-flipswitch {
+  background-color: lightgray !important;
+  color: black !important;
+  font-weight: normal !important;
+}
+
+.ui-flipswitch-active {
+  background-color: #0071BC !important;
+  color: white !important;
+  font-weight: bold !important;
 }
 
 input#txtNumber::-webkit-input-placeholder {
@@ -227,6 +296,7 @@ input#txtNumber {
     text-shadow: none;
     font-weight: normal;
 }
+
 
 .ui-input-text {
     background-color: rgba(255,255,255,1) !important;
@@ -279,9 +349,9 @@ div.hideResult {
 
 div.showResult  {
     -webkit-opacity: 1;
-    -webkit-transform: translate3d(0px, -170px, 0px);
+    -webkit-transform: translate3d(0px, -110px, 0px);
     opacity: 1;
-    transform: translate3d(0px, -170px, 0px);
+    transform: translate3d(0px, -110px, 0px);
 }
 
 .contentBody {
@@ -351,10 +421,20 @@ div#blockA, div#blockC {
 
 div#solutionContent {
     font-size: 10pt;
+}
+
+div#solutionContent, div#eqDetails {
     overflow-x: hidden;
     overflow-y: scroll;
 }
 
 table {
     text-align: center;
+}
+
+span.inlineIcon {
+  display: inline-block;
+  position: relative;
+  vertical-align: middle;
+  width: auto !important;
 }

@@ -23,13 +23,17 @@
             <div id="actionCenter" data-role="panel" data-position="left" data-display="overlay">
               <h1>MathCam <a href="#" class="ui-btn ui-icon-delete ui-btn-icon-notext ui-corner-all ui-btn-inline ui-mini" id="closeAction">No text</a></h1>
               <ul data-role="listview" id="actionCntr" class="ui-nodisc-icon">
+                <!--<li class="actionItem"><a href="#">Help</a></li>-->
                 <li data-role="collapsible" class="actionHead ui-nodisc-icon" data-inset="false" data-iconpos="right"
                   data-collapsed-icon="carat-d" data-expanded-icon="carat-u">
-                  <h2 class="collapseHeader">Converters</h2>
+                  <h2 class="collapseHeader">Options</h2>
                   <ul data-role="listview" class="actionList">
-                    <li class="actionItem"><a href="#">Number System</a></li>
-                    <li class="actionItem"><a href="#">Length</a></li>
-                    <li class="actionItem"><a href="#">Temperature</a></li>
+                    <li class="actionItem">
+                      <div class='fieldcontain'>
+                        <label for='equationMode'>Equation Mode</label>
+                        <input type='checkbox' id='equationMode' data-role='flipswitch' />
+                      </div>
+                    </li>
                   </ul>
                 </li>
                 <li class="actionItem">
@@ -70,12 +74,6 @@
                             <a class="ui-btn ui-icon-camera ui-btn-icon-notext ui-corner-all" href="#" id="cameraPopup">Camera</a>
                         </div>                        
                     </div>
-                    <!--<div class="ui-grid-a">
-                        <div class="ui-block-a txtInp"><input type="text" id="txtNumber" placeholder="Enter a number or an IP address" /></div>                        
-                        <div class="ui-block-b btnInp">
-                            <a class="ui-btn ui-icon-camera ui-btn-icon-notext ui-corner-all" href="#" id="cameraPopup">Camera</a>
-                        </div>
-                    </div>-->
                     <p id="equationArea">
                       <b>TIP: </b>Type an equation and the answer will be shown here.
                     </p>
@@ -170,15 +168,16 @@
                       <input type="hidden" name="dateSubmitted" />
                       <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
                         <legend>Rate the app:</legend>
-                        <input name="rating" type="radio" id="rateA" checked="checked" value="Too Bad" />
-                        <label for="rateA">Too Bad</label>
+                        <input name="rating" type="radio" id="rateA" checked="checked" value="Worst" />
+                        <label for="rateA"><span class='ui-icon-alert ui-btn-icon-notext ui-nodisc-icon noborder3 inlineIcon'></span></label>
                         <input name="rating" type="radio" id="rateB" value="Bad" />
-                        <label for="rateB">Bad</label>
+                        <label for="rateB"><span class='ui-icon-delete ui-btn-icon-notext ui-nodisc-icon noborder3 inlineIcon'></span></label>
                         <input name="rating" type="radio" id="rateC" value="Good" />
-                        <label for="rateC">Good</label>
-                        <input name="rating" type="radio" id="rateD" value="Too Good" />
-                        <label for="rateD">Too Good</label>
+                        <label for="rateC"><span class='ui-icon-check ui-btn-icon-notext ui-nodisc-icon noborder3 inlineIcon'></span></label>
+                        <input name="rating" type="radio" id="rateD" value="Great" />
+                        <label for="rateD"><span class='ui-icon-heart ui-btn-icon-notext ui-nodisc-icon noborder3 inlineIcon'></span></label>
                       </fieldset>
+                      <p>Rating Description: <span id="rdesc">Worst</span></p>
                       <p>
                         <textarea name="comment" placeholder="Comments (optional)" id="comments"></textarea>
                       </p>
@@ -209,7 +208,15 @@
                         <h3>Edit Equation</h3>
                         <a class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right" href="#" data-rel="back">Close</a>
                     </div>
-                    
+                    <div class="ui-content" role="main">
+                        <p><input type="text" id="fullEq" placeholder="Enter equation here" /></p>
+                        <p id="eqStatus">These are the numbers in your equation</p>
+                        <div id="eqDetails">
+                        </div>
+                        <p id='eqStat2'><b>Answer (in <span id='sysAns'>Decimal</span> format):</b></p>
+                        <p id="eqAnswer">52</p>
+                        <a class="ui-btn ui-corner-all ui-btn-shadow" href="#" data-rel="back" id="saveEquation">Got It!</a>
+                    </div>
                 </div>
             </div> <!-- main -->
         </div> <!-- page -->
@@ -235,15 +242,8 @@
                 <p id="imgDesc">Image Taken:</p>
                 <img id="imgPlaceholder" />
               </div>
-              <div class="ui-corner-all custom-corners" id="recRes">
-                <div class="ui-bar ui-bar-a">
-                    <h3>Recognition Results</h3>
-                </div>
-                <div class="ui-body ui-body-a bgrec">
-                  <p id="recognitionRes">
-
-                  </p>
-                </div>
+              <div class="ui-content" data-role="popup" id="recognitionResults" data-arrow="b" data-dismissable="false">
+                <p id="recognitionRes"></p>
               </div>
               <a class="ui-btn ui-corner-all ui-btn-shadow" id="useImage" href="#">Use Number</a>
             </div>
