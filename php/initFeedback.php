@@ -13,7 +13,7 @@ if (!$conn) {
 // get values from form
 $platform = htmlspecialchars($_POST["platform"]);
 $version = htmlspecialchars($_POST["version"]);
-$dateSubmitted = htmlspecialchars($_POST["dateSubmitted"]);
+$dateSubmitted = date('Y-m-d H:i:s');
 $rating = htmlspecialchars($_POST["rating"]);
 $comment = isset($_POST["comment"]) ? htmlspecialchars($_POST["comment"]) : "";
 

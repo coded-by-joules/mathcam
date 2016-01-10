@@ -1,6 +1,12 @@
+Node version: v5.3.0
+
+Cordova version: 5.4.1
+
+Config.xml file: 
+
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.juleskelly.mathcam" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>MathCam</name>
+<widget id="com.juleskelly.mathcam2" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>MathCam 2</name>
     <description>
         Upgraded version of the old MathCam
     </description>
@@ -40,3 +46,13 @@
     </platform>
     <plugin name="cordova-plugin-crop" spec="~0.1.0" />
 </widget>
+
+
+Plugins: 
+
+com.juleskelly.tesseract,cordova-plugin-camera,cordova-plugin-crop,cordova-plugin-device,cordova-plugin-dialogs,cordova-plugin-file,cordova-plugin-network-information,cordova-plugin-splashscreen,cordova-plugin-whitelist
+
+Error retrieving Android platform information: Error: cmd: Command failed with exit code 1 Error output:
+'android' is not recognized as an internal or external command,
+operable program or batch file.
+

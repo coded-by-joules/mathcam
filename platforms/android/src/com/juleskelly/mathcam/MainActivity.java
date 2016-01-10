@@ -17,7 +17,7 @@
        under the License.
  */
 
-package com.juleskelly.mathcam2;
+package com.juleskelly.mathcam;
 
 import android.os.Bundle;
 import org.apache.cordova.*;

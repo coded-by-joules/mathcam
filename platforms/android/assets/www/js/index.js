@@ -174,6 +174,8 @@ var app = {
 
         // camera launching event
         $("#btnCamera").click(function () {
+            if (app.fileNumber !== null)
+                app.deleteLastImage();
             navigator.camera.getPicture(cameraCallback, errorMsg, { quality: 50,
                                                               destinationType: Camera.DestinationType.FILE_URI,
                                                             correctOrientation: true,
@@ -183,9 +185,11 @@ var app = {
 
         // import event handler
         $("#btnImport").click(function() {
+            if (app.fileNumber !== null)
+                app.deleteLastImage();
            navigator.camera.getPicture(cameraCallback, errorMsg, {quality: 50,
                                                                  destinationType: Camera.DestinationType.FILE_URI,
-                                                                 sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
+                                                                 sourceType: Camera.PictureSourceType.SAVEDPHOTOALBUM,
                                                                correctOrientation: true});
            app.imported = true;
         });
@@ -941,15 +945,17 @@ var app = {
     },
 
     imgOperation: function (newPath) {
-        if (app.fileNumber !== null)
-            app.deleteLastImage();
 
-          window.resolveLocalFileSystemURL(newPath, function (fileEntry) {
+
+        console.log(newPath);
+          window.resolveLocalFileSystemURL(newPath, function resolveURL(fileEntry) {
             var dirPath = cordova.file.externalRootDirectory + "OCRFolder/";
+            console.log(fileEntry);
 
-            window.resolveLocalFileSystemURL(dirPath, function (dir) {
+            window.resolveLocalFileSystemURL(dirPath, function saveImage(dir) {
               app.fileNumber = "ocr" + app.generateRandom(100, 999) + ".jpg";
               localStorage.setItem("lastFile", app.fileNumber);
+              console.log(dir);
 
               fileEntry.copyTo(dir, app.fileNumber, app.showImage, app.saveError);
             }, app.saveError);
@@ -958,7 +964,8 @@ var app = {
     
     deleteLastImage: function () {
       var imgPath = cordova.file.externalRootDirectory + "OCRFolder/" + app.fileNumber;
-      window.resolveLocalFileSystemURL(imgPath, function (fileEntry) {
+      window.resolveLocalFileSystemURL(imgPath, function problem(fileEntry) {
+        console.log(fileEntry);
         fileEntry.remove(null, function () {
           app.fileNumber = null;
         });
@@ -970,7 +977,16 @@ var app = {
     },
 
     saveError: function (e) {
-        alert("There is a problem saving the image. Please reinstall MathCam. Error code = " + e.code, null, arguments.callee.caller.toString(), "OK");
+        var code = e.code,
+            cal = arguments.callee.caller.toString();
+            
+        // alert("There is a problem saving the image. Please restart MathCam.", null,
+        //         "MathCam", "OK");
+        app.feedbackEngine.AddFeedback("System", "Error code: " + code + "\nFunction: " + cal, function () {
+           alert("There is a problem saving the image. Please restart MathCam.", function () {
+               app.feedbackEngine.SendFeedback(null, null);
+           }, "MathCam", "OK");
+       }, null);
 
     },
 
@@ -993,12 +1009,14 @@ var app = {
           $("#imgDesc").show();
           // show popup
                
-          $("#recognitionResults").popup("open", 
-            {
-                x: ~~(windowWidth / 2),
-                y: 190,
-                transition: "fade"
-          });
+          setTimeout(function () {
+            $("#recognitionResults").popup("open", 
+                {
+                    x: ~~(windowWidth / 2),
+                    y: 190,
+                    transition: "fade"
+              });
+          }, 500);
 
           $("#recognitionRes").html("&#8226;&#8226;&#8226;"); // small three dots
 
@@ -1015,6 +1033,11 @@ var app = {
                 $("#recognitionRes").html(result);
                 $("#useImage").show();
               }
+
+              $("#recognitionResults").popup("reposition", {
+                x: ~~(windowWidth / 2),
+                y: 190
+              });
               // $("#recognitionRes").html(msg);
             });
           }, 500);

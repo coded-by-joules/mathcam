@@ -24,6 +24,18 @@
               <h1>MathCam <a href="#" class="ui-btn ui-icon-delete ui-btn-icon-notext ui-corner-all ui-btn-inline ui-mini" id="closeAction">No text</a></h1>
               <ul data-role="listview" id="actionCntr" class="ui-nodisc-icon">
                 <!--<li class="actionItem"><a href="#">Help</a></li>-->
+                <li data-role="collapsible" class="actionHead ui-nodisc-icon" data-inset="false" data-iconpos="right">
+                  <h2 class="collapseHeader">Converters</h2>
+                  <ul data-role="listview" class="actionList">
+                    <li class="actionItem"><a href="index.html" data-ajax="false">Number System</a></li>
+                  </ul>
+                </li>
+                <li data-role="collapsible" class="actionHead ui-nodisic-icon" data-inset="false" data-iconpos="right">
+                  <h2 class="collapseHeader">Calculators</h2>
+                  <ul data-role="listview" class="actionList">
+                    <li class="actionItem"><a href="statistics.html" data-ajax="false">Statistics</a></li>
+                  </ul>
+                </li>
                 <li data-role="collapsible" class="actionHead ui-nodisc-icon" data-inset="false" data-iconpos="right"
                   data-collapsed-icon="carat-d" data-expanded-icon="carat-u">
                   <h2 class="collapseHeader">Options</h2>
@@ -242,7 +254,9 @@
                 <p id="imgDesc">Image Taken:</p>
                 <img id="imgPlaceholder" />
               </div>
-              <div class="ui-content" data-role="popup" id="recognitionResults" data-arrow="b" data-dismissable="false">
+
+              <div class="ui-content" data-role="popup" id="recognitionResults" data-arrow="b">
+                 <a class="ui-btn ui-corner-all ui-shadow ui-btn-a ui-icon-delete ui-btn-icon-notext ui-btn-right" href="#" data-rel="back">Close</a>
                 <p id="recognitionRes"></p>
               </div>
               <a class="ui-btn ui-corner-all ui-btn-shadow" id="useImage" href="#">Use Number</a>

@@ -62,6 +62,7 @@ span#rdesc {
 
 p#recognitionRes {
   font-size: 12pt;
+  font-weight: bold;
   text-align: middle;
 }
 
