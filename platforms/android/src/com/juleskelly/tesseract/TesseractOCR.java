@@ -169,15 +169,16 @@ public class TesseractOCR extends CordovaPlugin {
 
       Log.v(TAG, "OCRED Text: " + recognizedText);
 			if (lang.equalsIgnoreCase("eng")) {
-				recognizedText = recognizedText.replaceAll("[^a-zA-Z0-9]+", " ");
+				// recognizedText = recognizedText.replaceAll("[^a-zA-Z0-9]+", " ");
+        recognized = recognizedText;
 			}
 
-			recognizedText = recognizedText.trim();
-			Log.v(TAG, "Recognized Text: " + recognizedText);
+			// recognizedText = recognizedText.trim();
+			// Log.v(TAG, "Recognized Text: " + recognizedText);
 
 
-      Log.v(TAG, "Scanning completed");
-      recognized = recognizedText;
+   //    Log.v(TAG, "Scanning completed");
+   //    recognized = recognizedText;
       callbackContext.success(recognized);
       return;
     }

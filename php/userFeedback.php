@@ -15,16 +15,17 @@
   mysqli_begin_transaction($conn);
 
   $stmt = mysqli_stmt_init($conn);
-  $sql = "INSERT INTO UserFeedback(dateSubmitted, name, comment) values(?, ?, ?)";
+  $sql = "INSERT INTO UserFeedback(dateSubmitted, name, system, comment) values(?, ?, ?, ?)";
 
   $date = date("Y-m-d H:i:s");
 
   if (mysqli_stmt_prepare($stmt, $sql)) {
     for ($i = 0; $i < $feedbacks_len; $i++) {
       $name = htmlspecialchars($feedbacks[$i]["name"]);
+      $system = htmlspecialchars($feedbacks[$i]["system"]);
       $comment = htmlspecialchars($feedbacks[$i]["comment"]);
 
-      mysqli_stmt_bind_param($stmt, "sss", $date, $name, $comment);
+      mysqli_stmt_bind_param($stmt, "ssss", $date, $name, $system, $comment);
       if (!mysqli_stmt_execute($stmt)) {
         mysqli_rollback($stmt);
         echo mysqli_error($conn);

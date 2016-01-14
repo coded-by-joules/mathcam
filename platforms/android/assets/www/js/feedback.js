@@ -8,6 +8,7 @@ var Feedback = function () {
         tx.executeSql("CREATE TABLE IF NOT EXISTS tblFeedback ("
         + "FeedbackID INTEGER PRIMARY KEY AUTOINCREMENT, "
         + "Name varchar, "
+        + "System varchar, "
         + "Comment varchar, "
         + "Sent int)")
     });
@@ -16,13 +17,13 @@ var Feedback = function () {
 };
 
 // inserts a feedback to the database
-Feedback.prototype.AddFeedback = function (name, comment, onSuccess, onError) {
-  if (this.db != null) {
+Feedback.prototype.AddFeedback = function (name, system, comment, onSuccess, onError) {
+  if (this.db !== null) {
     console.log("Feedback entry insertion started...");
     // execute insert methods
     this.db.transaction(function (tx) {
-      tx.executeSql("INSERT INTO tblFeedback(Name, Comment, Sent) values (?, ?, ?)",
-        [name, comment, 0]);
+      tx.executeSql("INSERT INTO tblFeedback(Name, System, Comment, Sent) values (?, ?, ?, ?)",
+        [name, system, comment, 0]);
     }, onError, onSuccess);
   }
   else {
@@ -32,7 +33,7 @@ Feedback.prototype.AddFeedback = function (name, comment, onSuccess, onError) {
 
 // implement the sending and deleting later...
 Feedback.prototype.SendFeedback = function (onSuccess, onError) {
-  if (this.db != null) {
+  if (this.db !== null) {
     console.log("Feedback sending started...");
     var feedbacks = [];
     var dataB = this.db;
@@ -46,6 +47,7 @@ Feedback.prototype.SendFeedback = function (onSuccess, onError) {
           // send the single record to the database server
           var sendData = {
             name: row.Name,
+            system: row.System,
             comment: row.Comment
           };
           console.log(sendData);

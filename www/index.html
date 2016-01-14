@@ -27,7 +27,7 @@
                 <li data-role="collapsible" class="actionHead ui-nodisc-icon" data-inset="false" data-iconpos="right">
                   <h2 class="collapseHeader">Converters</h2>
                   <ul data-role="listview" class="actionList">
-                    <li class="actionItem"><a href="index.html" data-ajax="false">Number System</a></li>
+                    <li class="actionItem"><a href="#" data-rel="close">Number System</a></li>
                   </ul>
                 </li>
                 <li data-role="collapsible" class="actionHead ui-nodisic-icon" data-inset="false" data-iconpos="right">
@@ -205,6 +205,7 @@
                   </div>
                   <div class="ui-content" role="main">
                     <form action="http://www.mathcam.esy.es/userFeedback.php" method="POST" id="fdForm">
+                      <input type="hidden" name="inputMode" value="Number System" />
                       <p>We would like to know what is bothering you...</p>
                       <p><input type="text" name="shortName" placeholder="Short Name"/></p>
                       <p>

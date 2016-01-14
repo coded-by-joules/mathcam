@@ -100,13 +100,19 @@
 	};
 
 	Statistic.Ungrouped.prototype.Median = function () {
-		var middle_element = ~~(this.num_count / 2);
+		var nums = this.numbers.sort(),
+			len = nums.length,
+			median = 0;
 
-		if (this.num_count % 2 === 0) {
-			return roundOff((parseInt(this.numbers[middle_element-1]) + parseInt(this.numbers[middle_element])) / 2);
+		if (len % 2 === 0 ) {
+			var mid_elem = Math.floor(len/2);
+			median = roundOff((parseInt(nums[mid_elem]) + parseInt(nums[mid_elem+1]))/2);
 		}
-		else
-			return this.numbers[middle_element];
+		else {
+			median = nums[Math.floor(len/2)];
+		}
+
+		return median;			
 	};
 
 	Statistic.Ungrouped.prototype.Mode = function () {
@@ -133,15 +139,73 @@
 	};
 
 	Statistic.Ungrouped.prototype.StandardDeviation = function () {
-		var mean = (new Statistic.Ungrouped(this.numbers)).Mean(),
+		var mean = this.Mean(),
 			subtracted = [];
 
 		for (var i = 0; i < this.num_count; i++) {
 			var item = Math.pow((parseInt(this.numbers[i]) - mean), 2);
 			subtracted.push(item);
 		}
-		var sub_mean = (new Statistic.Ungrouped(subtracted)).Mean();
+		var sub_mean = this.Mean();
 		return roundOff(Math.sqrt(sub_mean));
+	};
+
+	// groups the raw data, returns Grouped object
+	Statistic.Ungrouped.prototype.GroupData = function () {
+		var u_numbers = this.numbers.sort(),
+			u_length = u_numbers.length,
+			minvalyu = parseInt(u_numbers[0]),
+			maxvalyu = parseInt(u_numbers[u_length-1]),
+			g_numbers = [],
+			rows;
+
+		console.log(u_numbers);
+		// interval depends on how many numbers the data have
+		if (u_length >= 30)
+			rows = 5;
+		else if (u_length >= 20 && u_length < 30)
+			rows = 4;
+		else if (u_length >= 10 && u_length < 20)
+			rows = 3;
+		else
+			rows = 2;
+
+		// initialize table
+		var intval = Math.round((maxvalyu - minvalyu) / rows);
+		for (var i = minvalyu; i <= maxvalyu; i += intval) {
+			var data = {
+				range: i.toString() + "-" + (i+(intval-1)).toString(),
+				minValue: i.toString(),
+				maxValue: (i+(intval-1)).toString(),
+				frequency: 0
+			};			
+
+			g_numbers.push(data);
+		}
+
+		// populate data
+		var rowCount = g_numbers.length;
+		console.log(rowCount);
+		for (var j = 0; j < u_length; j++) {
+			var number = parseInt(u_numbers[j]);
+			
+			for (var k=0; k < rowCount; k++) {
+				var startrange = g_numbers[k].minValue,
+					endrange = g_numbers[k].maxValue;
+
+				//console.log(g_numbers[k].frequency);
+				if (startrange <= number && number <= endrange) {
+					g_numbers[k].frequency = g_numbers[k].frequency + 1;
+					break;
+				}
+			}
+		}
+
+		return (new Statistic.Grouped({
+			items: g_numbers,
+			numberCount: u_length,
+			interval: intval
+		})).GetGroupedData();
 	};
 
 	// methods for Grouped class
@@ -195,7 +259,7 @@
 				freqAfter = this.GroupedData.items[modal_group_indices[i]+1].frequency;
 			}
 
-			modes.push(lcb+(((freq-freqBefore)/((freq-freqBefore)+(freq-freqAfter)))*intval));
+			modes.push(roundOff(lcb+(((freq-freqBefore)/((freq-freqBefore)+(freq-freqAfter)))*intval)));
 		}
 
 		return modes;
@@ -205,7 +269,7 @@
 		var rows = this.GroupedData.items.length,
 			summation = 0,
 			sumFreq = 0,
-			mean = (new Statistic.Grouped(this.GroupedData).Mean());
+			mean = (this.Mean());
 
 		for (var i = 0; i < rows; i++) {
 			var freq = this.GroupedData.items[i].frequency,
@@ -216,6 +280,10 @@
 		}			
 
 		return roundOff(Math.sqrt(summation/sumFreq));
+	};
+
+	Statistic.Grouped.prototype.GetGroupedData = function () {
+		return this.GroupedData;
 	};
 
 	obj.Statistic = Statistic;

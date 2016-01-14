@@ -6,7 +6,7 @@ body {
     -webkit-touch-callout: none;                /* prevent callout to copy image, etc when tap to hold */
     -webkit-text-size-adjust: none;             /* prevent webkit from resizing text to fit */
     -webkit-user-select: none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
-    overflow: hidden;
+    /*overflow: hidden;*/
 }
 
 a.numbtn {
@@ -21,13 +21,100 @@ a.noborder {
   background-color: transparent !important;
 }
 
-#numberslist, table.group, #groupContent {
-	overflow-x: hidden;
-	overflow-y: auto;
+div#actionCenter, li.actionItem, li.actionHead {
+    background-color: #005E32 !important;
+    color: white !important;
 }
 
-textarea {
-	max-height: 50px;
+#actionCenter h1 {
+  font-weight: normal;
+}
+
+ul#actionCntr {
+  margin-top: 5px !important;
+}
+
+.collapseHeader {
+  margin-top: -12px !important;
+  margin-left: -15px !important;
+  margin-right: -15px !important;
+  margin-bottom: -2px !important;
+}
+
+li.actionHead {
+  border-color: #02522D !important;
+  border-left-width: 0 !important;
+  border-right-width: 0 !important;
+  margin-bottom: -10px !important;
+}
+
+ul.actionList li {
+  margin-top: 2px !important;
+  margin-bottom: -2px !important;
+  margin-left: -15px !important;
+  margin-right: -15px !important;
+}
+
+ul.actionList li a {
+  font-weight: normal;
+  text-indent: 10px;
+}
+
+.ui-collapsible-content {
+    margin-bottom: -4px !important;
+}
+
+#inputGrp .ui-block-a {
+    width: 80% !important;    
+}
+
+#inputGrp .ui-block-b {
+    width: 5% !important;
+}
+
+#inputGrp .ui-controlgroup-controls {
+    width: 100% !important;
+} 
+
+.controlgroup-textinput {
+    padding-top:.22em;
+    padding-bottom:.22em;
+}
+
+a#cameraPopup {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+input#txtNumber::-webkit-input-placeholder {
+    color: gray !important;
+    text-shadow: none !important;
+}
+
+input#txtNumber::-ms-input-placeholder {
+    color: gray !important;
+    text-shadow: none !important;
+}
+
+input#txtNumber {
+    color: black;
+    text-shadow: none;
+    font-weight: normal;
+    height: 30px;
+}
+
+#recResults {
+  display: none;
+  max-height: 50px;
+}
+
+.ui-input-text {
+    background-color: rgba(255,255,255,1) !important;
+}
+
+#numberslist, table.group, #groupContent, #number-list {
+	overflow-x: hidden;
+	overflow-y: auto;
 }
 
 div#results, div#frequencyShow {
@@ -107,6 +194,12 @@ table.groupTable thead tr {
 table.groupTable thead tr th {
   font-weight: normal;
   padding: 3px;
+}
+
+div.tableContainer {
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  font-size: 0.8em;
 }
 
 #btnGoBack {

@@ -885,9 +885,9 @@ var app = {
 
         $("#fdForm").submit(function (e) {
           e.preventDefault();
-          app.feedbackEngine.AddFeedback($("input[name='shortName']").val(), $("#comm").val(), function () {
+          app.feedbackEngine.AddFeedback($("input[name='shortName']").val(), $("input[name='inputMode']").val(), $("#comm").val(), function () {
             alert("Your feedback has been submitted successfully", function () {
-             $(document).scrollTop();   
+             $.mobile.silentScroll(0);
             }, "MathCam", "OK");
             $("#userFeedbackDialog").popup("close", {transition: "fade"});
             app.feedbackEngine.SendFeedback(null, null);
@@ -982,7 +982,7 @@ var app = {
             
         // alert("There is a problem saving the image. Please restart MathCam.", null,
         //         "MathCam", "OK");
-        app.feedbackEngine.AddFeedback("System", "Error code: " + code + "\nFunction: " + cal, function () {
+        app.feedbackEngine.AddFeedback("System", "Number System", "Error code: " + code + "\nFunction: " + cal, function () {
            alert("There is a problem saving the image. Please restart MathCam.", function () {
                app.feedbackEngine.SendFeedback(null, null);
            }, "MathCam", "OK");
@@ -1025,6 +1025,8 @@ var app = {
             tesseractOCR.recognizeImage(url, function (msg) {
               var result = msg,
                 pattern = /[^A-Fa-f0-9\.]|\s/g;
+
+              result = result.replace(/[^a-zA-Z0-9]+/g, "");
 
               if (pattern.test(result) || result.trim() === "") {
                 $("#recognitionRes").html("Number is unrecognizable");
