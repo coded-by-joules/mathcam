@@ -1,3 +1,4 @@
+
 var app = {
     
     // global variables
@@ -99,6 +100,8 @@ var app = {
             }
             $("#eqDetails").html(""); // clear the too much content
             $("#fullEq").val("");
+
+            $.mobile.silentScroll(0);
         };
 
         // adds the list of number systems detected to the combo box
@@ -260,6 +263,7 @@ var app = {
                 var number_stored = $("input[type='hidden']#en" + ctr).val(),
                     rep = new RegExp(num[key], 'g');
                 
+                //console.log(number_stored);
                 eq = eq.replace(rep, number_stored); 
                 ctr++;
             }
@@ -288,6 +292,7 @@ var app = {
 
             if (valid) {
                 var numbers = eq.GetNumbers(); // get all numbers used in the operation
+                console.log("Equation: " + equation);
                 $("#eqStatus").html("These are the numbers in your equation");
                 var content = "";
                 
@@ -301,6 +306,7 @@ var app = {
                         systems = detectNumberSystem(number),
                         sys_length = systems.length;
 
+                    console.log("eqDetail: " + number);
                     // placing an input-hidden tag beside the original number will store its equivalent decimal number
                     // so if user sets 40 as a hex number, the input-hidden value will be its equivalent decimal number
                     content += "<tr><td><span class='valueEquation'>" + number + "<sub>" + base + "</sub></span>";
@@ -694,13 +700,18 @@ var app = {
                            app.isEquation = false;
                        }                   
                        else {
-                           var str = "<div class='ui-grid-a'>"
-                            + "<div class='ui-block-a' id='eqAns'><span class='numericalAns'>" + ans + "</span>"
-                            + "<sub class='subSys'>" + (base == "Decimal" ? "10" : "16") + "</sub></div>"
-                            + "<div class='ui-block-b'><a href='#' class='ui-btn ui-mini ui-btn-icon-left ui-icon-info ui-corner-all' id='btnEditEquation'>Edit Equation</a></div>"
-                            + "</div>";
-                            $("#equationArea").html(str);
-                            app.isEquation = true;
+                            if (eq.ValidateEquation()) {
+                               var str = "<div class='ui-grid-a'>"
+                                + "<div class='ui-block-a' id='eqAns'><span class='numericalAns'>" + ans + "</span>"
+                                + "<sub class='subSys'>" + (base == "Decimal" ? "10" : "16") + "</sub></div>"
+                                + "<div class='ui-block-b'><a href='#' class='ui-btn ui-mini ui-btn-icon-left ui-icon-info ui-corner-all' id='btnEditEquation'>Edit Equation</a></div>"
+                                + "</div>";
+                                $("#equationArea").html(str);
+                                app.isEquation = true;
+                            }
+                            else {
+                                $("#equationArea").html("Invalid equation");
+                            }
                        }
                    }, 1000);
                } 
@@ -724,7 +735,13 @@ var app = {
         
         // editEquation click event
         $(document).on("click", "#btnEditEquation", function () {
-            $("#editEquationDialog").popup("open", {positionTo: "window", transition: "fade"});
+            var eqt = new Equation($("#txtNumber").val());
+            if (eqt.ValidateEquation())
+                $("#editEquationDialog").popup("open", {positionTo: "window", transition: "fade"});
+            else {
+                alert("Your equation syntax is invalid. Review its syntax and try again.", null, "MathCam", "OK");
+            }
+
         });
         
         $("#editEquationDialog").on("popupbeforeposition", function (event, ui) {
@@ -767,28 +784,33 @@ var app = {
         $(document).on("change", "select.eqSel", function () {
             var selected_system = $(this).val(),
                 $adjacent_input = $(this).parent().parent().parent().siblings().children("input"),
-                given_number = $adjacent_input.siblings("span").html();
+                given_number = $adjacent_input.siblings("span").html(),
+                num_ssys = $adjacent_input.siblings("span").children().html();
 
+            // string cleaning
+            given_number = given_number.replace("<sub>" + num_ssys + "</sub>", "");
 
             // do a silent conversion
             switch (selected_system) {
                 case "Decimal":
                     $adjacent_input.val(given_number);
-                    $adjacent_input.siblings("span").children().html("<sub>10</sub>");
+                    $adjacent_input.siblings("span").children().html("10");
                     break; // nothing to change here, really
                 case "Binary":
                     $adjacent_input.val(Converter.BinaryToDecimal(given_number));
-                    $adjacent_input.siblings("span").children().html("<sub>2</sub>");
+                    $adjacent_input.siblings("span").children().html("2");
                     break;
                 case "Hexadecimal":
                     $adjacent_input.val(Converter.HexadecimalToDecimal(given_number));
-                    $adjacent_input.siblings("span").children().html("<sub>16</sub>");
+                    $adjacent_input.siblings("span").children().html("16");
                     break;
                 case "Octal":
                     $adjacent_input.val(Converter.OctalToDecimal(given_number));
-                    $adjacent_input.siblings("span").children().html("<sub>8</sub>");
+                    $adjacent_input.siblings("span").children().html("8");
                     break;
             }
+            console.log($adjacent_input.val());
+            //console.log(num_ssys);
 
             // then update the answer
             updateAnswer();
@@ -796,6 +818,7 @@ var app = {
 
         $("#equationMode").change(function () {
             if ($("#equationMode").attr("checked") == "checked") {
+                $("#txtNumber").attr("maxlength", "15");
                 $("#equationMode").removeAttr("checked");
                 app.equationMode = false;
                 $("#equationArea").fadeOut("fast");
@@ -805,6 +828,7 @@ var app = {
                 app.equationMode = true;   
                 $("#equationArea").html("<b>TIP: </b>Type an equation and the answer will be shown here.");
                 $("#equationArea").fadeIn("fast");
+                $("#txtNumber").removeAttr("maxlength");
             }
 
             $("#equationMode").flipswitch("refresh");
@@ -813,7 +837,7 @@ var app = {
         
         $("#useImage").click(function () {
             // text generated will be placed to the text box
-            $("#txtNumber").val($("#recognitionRes").html());
+            $("#txtNumber").val($("span#txtRes").html());
 
             clearTakeImage();
         });
@@ -893,6 +917,55 @@ var app = {
             app.feedbackEngine.SendFeedback(null, null);
           }, null);
         });
+
+        $(document).on('click', 'a#lnkCorrect', function () {
+
+            var $cont = $("#recognitionRes > div"),
+                elem = "";
+
+            // replace the link with some div
+            $cont.addClass('ui-grid-a');
+            elem += "<div class='ui-block-a'><input type='text' id='txtRep' data-mini='true'/></div>";
+            elem += "<div class='ui-block-b'><input type='button' id='btnRep' data-mini='true' value='Replace' /></div>";
+            $cont.html(elem);
+
+            $("input[type='text']#txtRep").textinput();
+            $("input[type='button']#btnRep").button();
+
+            setTimeout(function () {
+                $("#recognitionResults").popup("reposition", {
+                    x: ~~(windowWidth / 2),
+                    y: 190  
+                });
+              }, 500);
+        });
+
+        $(document).on('click', "input[type='button']#btnRep", function () {
+            var $cont = $("#recognitionRes > div"),
+                $txt = $("input[type='text']#txtRep");
+
+            if ($txt.val().trim() !== "") {
+                $("span#txtRes").html($txt.val().trim());
+                $cont.html("<a href='#' id='lnkCorrect'>Edit</a>");
+
+                setTimeout(function () {
+                $("#recognitionResults").popup("reposition", {
+                    x: ~~($(window).width() / 2),
+                    y: 190  
+                });
+              }, 500);
+            }
+        });
+
+        $(document).on('taphold', 'p#convNum', function () {
+            $("#showUp p").html($("p#convNum").html());
+            $("#showUp").popup("open", {positionTo: "p#convNum", transition: "fade"});
+        });
+
+        $(document).on('taphold', 'div.answer', function () {
+            $("#showUp p").html($(this).html());
+            $("#showUp").popup("open", {positionTo: "div.answer", transition: fade});
+        });
     },
 
     onDeviceReady: function() {
@@ -945,17 +1018,15 @@ var app = {
     },
 
     imgOperation: function (newPath) {
-
-
         console.log(newPath);
           window.resolveLocalFileSystemURL(newPath, function resolveURL(fileEntry) {
             var dirPath = cordova.file.externalRootDirectory + "OCRFolder/";
-            console.log(fileEntry);
+            console.log(fileEntry.fullPath);
 
             window.resolveLocalFileSystemURL(dirPath, function saveImage(dir) {
               app.fileNumber = "ocr" + app.generateRandom(100, 999) + ".jpg";
               localStorage.setItem("lastFile", app.fileNumber);
-              console.log(dir);
+              console.log(dir.fullPath);
 
               fileEntry.copyTo(dir, app.fileNumber, app.showImage, app.saveError);
             }, app.saveError);
@@ -964,7 +1035,7 @@ var app = {
     
     deleteLastImage: function () {
       var imgPath = cordova.file.externalRootDirectory + "OCRFolder/" + app.fileNumber;
-      window.resolveLocalFileSystemURL(imgPath, function problem(fileEntry) {
+      window.resolveLocalFileSystemURL(imgPath, function (fileEntry) {
         console.log(fileEntry);
         fileEntry.remove(null, function () {
           app.fileNumber = null;
@@ -1032,14 +1103,18 @@ var app = {
                 $("#recognitionRes").html("Number is unrecognizable");
               }
               else {
+                result = "<span id='txtRes' style='text-align: center'>" + result + "</span><br>";
+                result = result + "<div><a href='#' id='lnkCorrect'>Is this correct?</a></div>";
                 $("#recognitionRes").html(result);
                 $("#useImage").show();
               }
 
-              $("#recognitionResults").popup("reposition", {
-                x: ~~(windowWidth / 2),
-                y: 190
-              });
+              setTimeout(function () {
+                $("#recognitionResults").popup("reposition", {
+                    x: ~~(windowWidth / 2),
+                    y: 190  
+                });
+              }, 1000);
               // $("#recognitionRes").html(msg);
             });
           }, 500);

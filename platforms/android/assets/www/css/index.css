@@ -106,15 +106,19 @@ li {
 }
 
 li.resultList, li.actionItem, li.actionHead {
-    -webkit-transform: translate3d(0px,0px,0px);
-    -webkit-opacity: 1;
+    -webkit-transform: none;
+    -webkit-backface-visibility: visible;
+    transform: none;
 
-    transform: translate3d(0px,0px,0px);
+    backface-visibility: visible;
+    -webkit-opacity: 1;
     opacity: 1;
 }
 
 ul#actionCntr {
   margin-top: 5px !important;
+  -webkit-transform: none;
+  transform: none;
 }
 
 .collapseHeader {
@@ -375,6 +379,23 @@ div.convDetails, div#ipAns {
 p#convNum, button#ipAns {
     font-size: 24pt;
     font-weight: bold;
+}
+
+p#convNum, #numberSystemAns div h2 {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+#numberSystemAns div h2 {
+  width: 90% !important;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#showUp p {
+  width: 80%;
+  overflow-x: auto;
 }
 
 p#convType {
