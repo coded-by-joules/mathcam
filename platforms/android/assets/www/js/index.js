@@ -11,7 +11,7 @@ var app = {
     isEquation: false,
     eqChanged: false,
     equationMode: false,
-    
+
     // Application Constructor
     initialize: function () {
         "use strict";
@@ -42,6 +42,7 @@ var app = {
         // UI imporvements
         $(".convertList").css("max-height", ($(window).height() - 200) + "px");
         $("#eqDetails").css("max-height", ($(window).height() * 0.3) + "px");
+        $("#drawing").css("height", ($(window).height() * 0.70) + "px");
         $("#useImage").hide();
 
         // function to be invoked when camera returns an error
@@ -118,13 +119,15 @@ var app = {
 
         // an
         var transition = function () {
-            $("#equationArea").html("");
-            $("#input").addClass("inputHidden");
-            $("#input").css("visibility", "hidden");
-            $("#results").addClass("showResult");
-            $("#results").css("visibility", "visible");
-            
-            $(document).undelegate(".ui-content", "scrollstart", false);
+            $("#drawing").fadeOut("fast", function () {
+                $("#equationArea").html("");
+                $("#input").addClass("inputHidden");
+                $("#input").css("visibility", "hidden");
+                $("#results").addClass("showResult");
+                $("#results").css("visibility", "visible");
+                
+                $(document).undelegate(".ui-content", "scrollstart", false);
+            });
         };
 
         // IMPORTANT METHOD HERE
@@ -177,8 +180,8 @@ var app = {
 
         // camera launching event
         $("#btnCamera").click(function () {
-            if (app.fileNumber !== null)
-                app.deleteLastImage();
+            if (app.fileNumber !== null) 
+                    app.deleteLastImage();
             navigator.camera.getPicture(cameraCallback, errorMsg, { quality: 50,
                                                               destinationType: Camera.DestinationType.FILE_URI,
                                                             correctOrientation: true,
@@ -250,7 +253,6 @@ var app = {
         };
 
         // updates the answer on the equation dialog box
-        // BUGS here... 
         var updateAnswer = function () {
             // replace values on equation
             var eq = $("#fullEq").val(),
@@ -263,7 +265,6 @@ var app = {
                 var number_stored = $("input[type='hidden']#en" + ctr).val(),
                     rep = new RegExp(num[key], 'g');
                 
-                //console.log(number_stored);
                 eq = eq.replace(rep, number_stored); 
                 ctr++;
             }
@@ -292,7 +293,7 @@ var app = {
 
             if (valid) {
                 var numbers = eq.GetNumbers(); // get all numbers used in the operation
-                console.log("Equation: " + equation);
+                
                 $("#eqStatus").html("These are the numbers in your equation");
                 var content = "";
                 
@@ -306,7 +307,7 @@ var app = {
                         systems = detectNumberSystem(number),
                         sys_length = systems.length;
 
-                    console.log("eqDetail: " + number);
+                    
                     // placing an input-hidden tag beside the original number will store its equivalent decimal number
                     // so if user sets 40 as a hex number, the input-hidden value will be its equivalent decimal number
                     content += "<tr><td><span class='valueEquation'>" + number + "<sub>" + base + "</sub></span>";
@@ -357,7 +358,28 @@ var app = {
             var selected_system = $("#toggleSys span").html();
                     
             // copy input to area
-            $("#convNum").html(Converter.addBaseNumber(num_systems_detected[0], number.toUpperCase()));
+            if (selected_system == "Any")
+                $("#convNum").html(Converter.addBaseNumber(num_systems_detected[0], number.toUpperCase()));
+            else {
+                var base;
+
+                switch (selected_system) {
+                    case "Dec":
+                        base = "Decimal";
+                        break;
+                    case "Bin":
+                        base = "Binary";
+                        break;
+                    case "Hex":
+                        base = "Hexadecimal";
+                        break;
+                    case "Octal":
+                        base = "Octal";
+                        break;
+                }
+
+                $("#convNum").html(Converter.addBaseNumber(base, number.toUpperCase()));
+            }
             $("#hidNum").val(number);
 
             // convert the number and it's possbile number system
@@ -388,6 +410,7 @@ var app = {
                                 convertOperation(number, "Octal");
                                 break;
                         }
+                        $("#cmbFrom").selectmenu("refresh");
                     }
                     else {
                         alert("You've selected a number system that is not valid to the one you've entered.", null, "MathCam", "OK");
@@ -479,6 +502,8 @@ var app = {
             $("#input").removeClass("inputHidden");
 
             $(document).delegate(".ui-content", "scrollstart", false);
+            setTimeout(function () {
+                $("#drawing").fadeIn("fast");}, 200);
             clearInput();
         });
 
@@ -684,36 +709,79 @@ var app = {
                if (!app.eqChanged)
                    app.eqChanged = true;
 
-               if (equationCheck.test($("#txtNumber").val().trim())) {
+               if (equationCheck.test($("#txtNumber").val().replace(/ /g, ''))) {
                    $("#equationArea").html("Solving...");
                         
                    // validate the equation, and show the answer
                    setTimeout(function () {
-                       var eq = new Equation($("#txtNumber").val().trim()),
-                           reg = /[A-Fa-f]/,
-                           base = reg.test($("#txtNumber").val().trim()) ? "Hexadecimal" : "Decimal",
-                           ans = eq.SolvePostfix(eq.ToPostfix(), base).toUpperCase();
+                       var eq = new Equation($("#txtNumber").val().replace(/ /g, '')),
+                           base;
+                           
 
+                        if ($("#toggleSys span").html() == "Any") {
+                            var reg = /[A-Fa-f]/;
+                            base = reg.test($("#txtNumber").val().replace(/ /g, '')) ? "Hexadecimal" : "Decimal";
+                        }
+                        else {
+                            var nsys = $("#toggleSys span").html();
+
+                            switch (nsys) {
+                                case "Dec":
+                                    base = "Decimal";
+                                    break;
+                                case "Bin":
+                                    base = "Binary";
+                                    break;
+                                case "Hex":
+                                    base = "Hexadecimal";
+                                    break;
+                                case "Oct":
+                                    base = "Octal";
+                                    break;
+                            }
+                        }
+
+                        var ans = eq.SolvePostfix(eq.ToPostfix(), base).toUpperCase();
                        
-                       if (ans.toString() == "NAN") {
-                           $("#equationArea").html("Equation incomplete... Keep going...");
-                           app.isEquation = false;
-                       }                   
-                       else {
+                        if (ans.toString() == "NAN") {
+                            $("#equationArea").html("Equation incomplete... Keep going...");
+                            app.isEquation = false;
+                        }                   
+                        else {
                             if (eq.ValidateEquation()) {
-                               var str = "<div class='ui-grid-a'>"
-                                + "<div class='ui-block-a' id='eqAns'><span class='numericalAns'>" + ans + "</span>"
-                                + "<sub class='subSys'>" + (base == "Decimal" ? "10" : "16") + "</sub></div>"
-                                + "<div class='ui-block-b'><a href='#' class='ui-btn ui-mini ui-btn-icon-left ui-icon-info ui-corner-all' id='btnEditEquation'>Edit Equation</a></div>"
-                                + "</div>";
+                                var subBase;
+
+                                switch (base) {
+                                    case "Decimal":
+                                        subBase = "10";
+                                        break;
+                                    case "Binary":
+                                        subBase = "2";
+                                        break;
+                                    case "Hexadecimal":
+                                        subBase = "16";
+                                        break;
+                                    case "Octal":
+                                        subBase = "8";
+                                        break;
+                                }
+
+                                var str = "<div class='ui-grid-a'>"
+                                    + "<div class='ui-block-a' id='eqAns'><span class='numericalAns'>" + ans + "</span>"
+                                    + "<sub class='subSys'>" + subBase + "</sub></div>";
+
+                                if ($("#toggleSys span").html() == "Any")
+                                    str = str + "<div class='ui-block-b'><a href='#' class='ui-btn ui-mini ui-btn-icon-left ui-icon-info ui-corner-all' id='btnEditEquation'>Edit Equation</a></div>"
+
+                                str = str + "</div>";
                                 $("#equationArea").html(str);
                                 app.isEquation = true;
                             }
                             else {
                                 $("#equationArea").html("Invalid equation");
                             }
-                       }
-                   }, 1000);
+                        }
+                    }, 1000);
                } 
                else {
                    $("#equationArea").html("<b>TIP:</b> Type an equation and the answer will be shown here.");
@@ -809,8 +877,7 @@ var app = {
                     $adjacent_input.siblings("span").children().html("8");
                     break;
             }
-            console.log($adjacent_input.val());
-            //console.log(num_ssys);
+            
 
             // then update the answer
             updateAnswer();
@@ -838,6 +905,9 @@ var app = {
         $("#useImage").click(function () {
             // text generated will be placed to the text box
             $("#txtNumber").val($("span#txtRes").html());
+            if (app.equationMode) {
+                $("#txtNumber").trigger("input");
+            }
 
             clearTakeImage();
         });
@@ -937,7 +1007,7 @@ var app = {
                     x: ~~(windowWidth / 2),
                     y: 190  
                 });
-              }, 500);
+              }, 700);
         });
 
         $(document).on('click', "input[type='button']#btnRep", function () {
@@ -966,6 +1036,8 @@ var app = {
             $("#showUp p").html($(this).html());
             $("#showUp").popup("open", {positionTo: "div.answer", transition: fade});
         });
+
+        
     },
 
     onDeviceReady: function() {
@@ -1009,7 +1081,10 @@ var app = {
                 }, null, imgURI, {quality: 100});
             }
             else {
-                app.imgOperation(imgURI);
+                window.FilePath.resolveNativePath(imgURI, function (newStr) {
+                    app.imgOperation("file://" + newStr);    
+                }, null);
+                
             }
 
             
@@ -1018,29 +1093,28 @@ var app = {
     },
 
     imgOperation: function (newPath) {
-        console.log(newPath);
-          window.resolveLocalFileSystemURL(newPath, function resolveURL(fileEntry) {
+        window.resolveLocalFileSystemURL(newPath, function resolveURL(fileEntry) {
             var dirPath = cordova.file.externalRootDirectory + "OCRFolder/";
-            console.log(fileEntry.fullPath);
 
             window.resolveLocalFileSystemURL(dirPath, function saveImage(dir) {
-              app.fileNumber = "ocr" + app.generateRandom(100, 999) + ".jpg";
-              localStorage.setItem("lastFile", app.fileNumber);
-              console.log(dir.fullPath);
+                app.fileNumber = "ocr" + app.generateRandom(100, 999) + ".jpg";
+                localStorage.setItem("lastFile", app.fileNumber);
 
-              fileEntry.copyTo(dir, app.fileNumber, app.showImage, app.saveError);
+                fileEntry.copyTo(dir, app.fileNumber, app.showImage, app.saveError);
             }, app.saveError);
-          }, app.saveError);
+        
+        }, app.saveError);
+          
     },
     
     deleteLastImage: function () {
       var imgPath = cordova.file.externalRootDirectory + "OCRFolder/" + app.fileNumber;
       window.resolveLocalFileSystemURL(imgPath, function (fileEntry) {
-        console.log(fileEntry);
+        
         fileEntry.remove(null, function () {
           app.fileNumber = null;
         });
-      }, app.saveError);
+      }, null);
     },
 
     generateRandom: function (min, max) {
@@ -1055,7 +1129,7 @@ var app = {
         //         "MathCam", "OK");
         app.feedbackEngine.AddFeedback("System", "Number System", "Error code: " + code + "\nFunction: " + cal, function () {
            alert("There is a problem saving the image. Please restart MathCam.", function () {
-               app.feedbackEngine.SendFeedback(null, null);
+               //app.feedbackEngine.SendFeedback(null, null);
            }, "MathCam", "OK");
        }, null);
 
@@ -1095,12 +1169,22 @@ var app = {
           setTimeout(function () {
             tesseractOCR.recognizeImage(url, function (msg) {
               var result = msg,
-                pattern = /[^A-Fa-f0-9\.]|\s/g;
+                pattern;
 
-              result = result.replace(/[^a-zA-Z0-9]+/g, "");
+              
+              if (!app.equationMode) {
+                result = result.replace(/[^a-zA-Z0-9]+/g, "");
+                pattern = /[^a-zA-Z0-9\.]+/g;
+              }
+              else {
+                 result = result.replace(/[^A-Fa-f0-9\.\+\-\*\/]|\s/g, "");
+                 pattern = /[^a-zA-Z0-9\.\+\-\*\/]+/g;
+              }
+
+              
 
               if (pattern.test(result) || result.trim() === "") {
-                $("#recognitionRes").html("Number is unrecognizable");
+                $("#recognitionRes").html("The number detected is invalid");
               }
               else {
                 result = "<span id='txtRes' style='text-align: center'>" + result + "</span><br>";

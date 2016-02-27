@@ -269,6 +269,14 @@ module.exports = [
         "clobbers": [
             "navigator.splashscreen"
         ]
+    },
+    {
+        "file": "plugins/com.hiddentao.cordova.filepath/www/FilePath.js",
+        "id": "com.hiddentao.cordova.filepath.FilePath",
+        "pluginId": "com.hiddentao.cordova.filepath",
+        "clobbers": [
+            "window.FilePath"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -282,7 +290,8 @@ module.exports.metadata =
     "cordova-plugin-device": "1.1.0",
     "cordova-plugin-network-information": "1.1.0",
     "cordova-plugin-crop": "0.1.0",
-    "cordova-plugin-splashscreen": "3.0.0"
+    "cordova-plugin-splashscreen": "3.0.0",
+    "com.hiddentao.cordova.filepath": "1.0.0"
 }
 // BOTTOM OF METADATA
 });

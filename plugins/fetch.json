@@ -70,5 +70,13 @@
         },
         "is_top_level": true,
         "variables": {}
+    },
+    "com.hiddentao.cordova.filepath": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-filepath"
+        },
+        "is_top_level": true,
+        "variables": {}
     }
 }

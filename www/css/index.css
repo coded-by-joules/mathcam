@@ -334,6 +334,12 @@ div#convResults, div#historyArea {
   border-bottom-right-radius: inherit;
 }
 
+div#drawing {
+  background-image: url('../img/wkspc new.png');
+  background-size: 100%;
+  background-repeat: no-repeat;
+}
+
 div#results {
     position: relative;
     z-index: 200;
@@ -459,4 +465,9 @@ span.inlineIcon {
   position: relative;
   vertical-align: middle;
   width: auto !important;
+}
+
+canvas {
+  background-color: white;
+  border: 2px solid black;
 }

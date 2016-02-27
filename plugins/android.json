@@ -33,6 +33,9 @@
         },
         "cordova-plugin-splashscreen": {
             "PACKAGE_NAME": "com.juleskelly.mathcam2"
+        },
+        "com.hiddentao.cordova.filepath": {
+            "PACKAGE_NAME": "com.juleskelly.mathcam"
         }
     },
     "dependent_plugins": {}
